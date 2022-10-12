@@ -32,6 +32,9 @@
     <ClCompile Include="MyGame.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="unref_usefull staff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyGame.rc">

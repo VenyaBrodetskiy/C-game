@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyGame.c" />
+    <ClCompile Include="unref_usefull staff.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyGame.rc" />
