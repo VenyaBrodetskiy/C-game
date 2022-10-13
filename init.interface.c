@@ -32,34 +32,26 @@ BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow)
     return TRUE;
 }
 
-int createButtons(HWND hWindowMain)
+int createButtons(HWND hWindowMain, RECT GameFieldRect)
 {
-    RECT ClientRect;
-
-    GetClientRect(hWindowMain, &ClientRect);
-
     hButtonStart = CreateWindowW(L"button", L"Start game",
         WS_VISIBLE | WS_CHILD,
-        ClientRect.right - BUTTON1_SIZE_X, 0, BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
+        GameFieldRect.right, 0, BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
         hWindowMain, (HMENU)BUTTON_START, 0, NULL);
 
     return TRUE;
 }
 
-int createLabels(HWND hWindowMain)
+int createLabels(HWND hWindowMain, RECT GameFieldRect)
 {
-    RECT ClientRect;
-
-    GetClientRect(hWindowMain, &ClientRect);
-
     hStaticText1 = CreateWindowW(L"static", L"Counter: ",
         WS_CHILD | WS_VISIBLE,
-        ClientRect.right - BUTTON1_SIZE_X, BUTTON1_SIZE_Y, 55, 25,
+        GameFieldRect.right, BUTTON1_SIZE_Y, STAT_TEXT1_X, STAT_TEXT1_Y,
         hWindowMain, (HMENU)1, NULL, NULL);
 
     hDynamicText1 = CreateWindowW(L"static", L"0",
         WS_CHILD | WS_VISIBLE | WS_BORDER,
-        ClientRect.right - BUTTON1_SIZE_X + 55, BUTTON1_SIZE_Y, 45, 25,
+        GameFieldRect.right + 55, BUTTON1_SIZE_Y, DYN_TEXT1_X, DYN_TEXT1_Y,
         hWindowMain, (HMENU)2, NULL, NULL);
 
     return TRUE;

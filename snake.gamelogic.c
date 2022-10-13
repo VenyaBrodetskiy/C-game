@@ -1,16 +1,8 @@
 #include "snake.gamelogic.h"
-
-//extern RECT snake;
-//int snakeSpeed, snakeSpeedX, snakeSpeedY;
-
 extern Snake snake;
 
-int initSnake(HWND hWindowMain)
+int initSnake(HWND hWindowMain, RECT GameFieldRect)
 {
-    RECT GameFieldRect;
-    GetClientRect(hWindowMain, &GameFieldRect);
-    GameFieldRect.right -= BUTTON1_SIZE_X;
-
     snake.speed = DEFAULT_SPEED;
     snake.speedX = 0;
     snake.speedY = 0;
@@ -24,12 +16,8 @@ int initSnake(HWND hWindowMain)
     return 1;
 }
 
-int moveSnake(HWND hWindowMain)
+int moveSnake(HWND hWindowMain, RECT GameFieldRect)
 {
-    RECT GameFieldRect;
-    GetClientRect(hWindowMain, &GameFieldRect);
-    GameFieldRect.right -= BUTTON1_SIZE_X;
-
     if (snake.position.right >= GameFieldRect.right - snake.speedX)
     {
         snake.speedX = -snake.speedX;
@@ -55,4 +43,27 @@ int moveSnake(HWND hWindowMain)
     snake.position.bottom += snake.speedY;
 
     return 1;
+}
+
+int changeSnakeDirection(WPARAM wParam)
+{
+    switch (wParam)
+    {
+    case VK_UP:
+        snake.speedY = -snake.speed;
+        snake.speedX = 0;
+        break;
+    case VK_DOWN:
+        snake.speedY = snake.speed;
+        snake.speedX = 0;
+        break;
+    case VK_LEFT:
+        snake.speedY = 0;
+        snake.speedX = -snake.speed;
+        break;
+    case VK_RIGHT:
+        snake.speedY = 0;
+        snake.speedX = snake.speed;
+        break;
+    }
 }

@@ -1,7 +1,4 @@
 // MyGame.cpp : Defines the entry point for the application.
-//
-
-#include <strsafe.h>
 #include "main.h"
 
 // Global Variables:
@@ -18,7 +15,7 @@ int counter = 0;
 
 // snake
 HDC hdc;
-
+RECT GameFieldRect;
 Snake snake;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -45,7 +42,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAcceleratorsW(hInstance, MAKEINTRESOURCE(IDC_MYGAME));
 
     MSG msg = { 0 };
-   
     // Main message loop:
     while (GetMessageW(&msg, NULL, 0, 0))
     {
@@ -55,9 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessageW(&msg);
             
         }
-        
     }
-
     return (int) msg.wParam;
 }
 
@@ -104,21 +98,18 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_CREATE:
         {
             RegisterHotKey(hWindowMain, ID_HOTKEY_1, MOD_CONTROL, C_BUTTON);
-            createButtons(hWindowMain);
-            createLabels(hWindowMain);
+            createButtons(hWindowMain, GameFieldRect);
+            createLabels(hWindowMain, GameFieldRect);
 
             hdc = GetDC(hWindowMain);
-
-
-            //hLabel1 = CreateLabel(hWindowMain);
             break;
         }
     case WM_TIMER:
     {
         if (isGameStarted)
         { 
-            moveSnake(hWindowMain);
-            paintSnake(hWindowMain, hdc);
+            moveSnake(hWindowMain, GameFieldRect);
+            paintSnake(hWindowMain, hdc, GameFieldRect);
         }
         
     }
@@ -132,27 +123,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         }   
 
     case WM_KEYDOWN:
-        {
-            switch (wParam)
-            {
-            case VK_UP:
-                snake.speedY = -snake.speed;
-                snake.speedX = 0;
-                break;
-            case VK_DOWN:
-                snake.speedY = snake.speed;
-                snake.speedX = 0;
-                break;
-            case VK_LEFT:
-                snake.speedY = 0;
-                snake.speedX = -snake.speed;
-                break;
-            case VK_RIGHT:
-                snake.speedY = 0;
-                snake.speedX = snake.speed;
-                break;
-            }
-        }
+        changeSnakeDirection(wParam);
         break;
     case WM_COMMAND:
         {
@@ -162,8 +133,9 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             {
             case BUTTON_START:
                 isGameStarted = TRUE;
-                initSnake(hWindowMain);
-                SetTimer(hWindowMain, 2, 10, NULL);
+                // TODO: When Game is started need to restrict window size changes
+                initSnake(hWindowMain, GameFieldRect);
+                SetTimer(hWindowMain, 2, 16, NULL); // approx 60 fps
                 SetFocus(hWindowMain);
                 break;
             // below part is not needed, as I removed MENU from main window
@@ -184,13 +156,14 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             // hdc is handle to device context
             HDC hdc = BeginPaint(hWindowMain, &ps);
 
-            paintGameField(hWindowMain, hdc);
+            paintGameField(hdc, GameFieldRect);
 
             EndPaint(hWindowMain, &ps);
         }
         break;
     case WM_SIZE:
-        MoveAllButtons(hWindowMain);
+        GameFieldRect = GetGameFieldSize(hWindowMain);
+        MoveAllButtons(hWindowMain, GameFieldRect);
         break;
     case WM_DESTROY:
         UnregisterHotKey(hWindowMain, ID_HOTKEY_1);
