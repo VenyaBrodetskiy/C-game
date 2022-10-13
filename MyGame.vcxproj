@@ -128,13 +128,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="MyGame.h" />
+    <ClInclude Include="game.paint.h" />
+    <ClInclude Include="init.interface.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="snake.gamelogic.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="update.interface.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MyGame.c" />
+    <ClCompile Include="game.paint.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="init.interface.c" />
+    <ClCompile Include="movement.c" />
+    <ClCompile Include="snake.gamelogic.c" />
     <ClCompile Include="unref_usefull staff.c" />
+    <ClCompile Include="update.interface.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyGame.rc" />
