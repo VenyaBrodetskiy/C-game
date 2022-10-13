@@ -3,5 +3,5 @@
 #include "main.h"
 
 BOOL InitMainWindow(HINSTANCE, int);
-int createButtons(HWND hWindowMain);
-int createLabels(HWND hWindowMain);
+int createButtons(HWND hWindowMain, RECT GameFieldRect);
+int createLabels(HWND hWindowMain, RECT GameFieldRect);

@@ -3,5 +3,5 @@
 #include "framework.h"
 #include "main.h"
 
-int paintGameField(HWND hWindowMain, HDC hdc);
-int paintSnake(HWND hWindowMain, HDC hdc);
+int paintGameField(HDC hdc, RECT GameField);
+int paintSnake(HWND hWindowMain, HDC hdc, RECT GameField);

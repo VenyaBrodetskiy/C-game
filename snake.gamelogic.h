@@ -2,5 +2,6 @@
 #include "framework.h"
 #include "main.h"
 
-int initSnake(HWND hWindowMain);
-int moveSnake(HWND hWindowMain);
+int initSnake(HWND hWindowMain, RECT GameFieldRect);
+int moveSnake(HWND hWindowMain, RECT GameFieldRect);
+int changeSnakeDirection(WPARAM wParam);
