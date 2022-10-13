@@ -8,16 +8,25 @@
 #define MAX_LOADSTRING 100
 #define ID_HOTKEY_1 1 // for hot key Ctrl + C
 #define C_BUTTON 0x43 // code of "C" from keyboard
-#define BUTTON_COUNTER 3 // N of button
+
+#define BUTTON_START 3 // N of button
+#define BUTTON1_SIZE_X 100
+#define BUTTON1_SIZE_Y 30
 
 // Global Variables:
 HINSTANCE    hInst;                                // current instance
 WCHAR        szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR        szWindowClass[MAX_LOADSTRING];            // the main window class name
+HWND         hWindowMain = { 0 };
 
-HWND button_counter; // init button
+// All Button handlers
+HWND hButtonStart; // init button
+HWND hStaticText1;
 HWND hDynamicText1; // init global text-window
 int counter = 0;
+
+// snake
+RECT snake = { 0 };
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -45,9 +54,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     
    
     /////////////// playground ///////////////////////
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MYGAME));
+
+    HACCEL hAccelTable = LoadAcceleratorsW(hInstance, MAKEINTRESOURCE(IDC_MYGAME));
 
     MSG msg = { 0 };
+    HDC hdc = GetDC(hWindowMain);
 
     // Main message loop:
     while (GetMessageW(&msg, NULL, 0, 0))
@@ -56,7 +67,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         {
             TranslateMessage(&msg);
             DispatchMessageW(&msg);
+            
         }
+        moveSnake();
+        paintSnake(hWindowMain, hdc);
     }
 
     return (int) msg.wParam;
@@ -82,9 +96,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     WindowClass.hInstance      = hInstance;
     WindowClass.hIcon          = LoadIconW(hInstance, MAKEINTRESOURCEW(IDI_MYGAME));
     WindowClass.hCursor        = LoadCursorW(NULL, IDC_ARROW);
-    WindowClass.hbrBackground  = GetSysColorBrush(COLOR_3DFACE);
-        //(HBRUSH)(COLOR_WINDOW+1);
-    WindowClass.lpszMenuName   = MAKEINTRESOURCEW(IDC_MYGAME);
+    WindowClass.hbrBackground  = (HBRUSH)(COLOR_WINDOW); // GetSysColorBrush(COLOR_3DFACE);
+    WindowClass.lpszMenuName   = MAKEINTRESOURCEW(NULL); //MAKEINTRESOURCEW(IDC_MYGAME);
     WindowClass.lpszClassName  = szWindowClass;
     WindowClass.hIconSm        = LoadIconW(WindowClass.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -138,7 +151,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             RegisterHotKey(hWindowMain, ID_HOTKEY_1, MOD_CONTROL, C_BUTTON);
             createButtons(hWindowMain);
             createLabels(hWindowMain);
-
+            initSnake(hWindowMain);
             //hLabel1 = CreateLabel(hWindowMain);
             break;
         }
@@ -157,17 +170,19 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             // Parse the menu selections:
             switch (wmId)
             {
-            case BUTTON_COUNTER:
+            case BUTTON_START:
                 {
                     counterIncrease();
                     break;
                 }
-            case IDM_ABOUT:
+
+            // below part is not needed, as I removed MENU from main window
+            /*case IDM_ABOUT:
                 DialogBoxW(hInst, MAKEINTRESOURCEW(IDD_ABOUTBOX), hWindowMain, About);
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWindowMain);
-                break;
+                break;*/
             default:
                 return DefWindowProcW(hWindowMain, message, wParam, lParam);
             }
@@ -176,16 +191,19 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWindowMain, &ps);
-             // TODO: Add any drawing code that uses hdc here...
-            HPEN hPen = CreatePen(PS_SOLID, 4, RGB(255, 128, 0));
-            HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
+            // hdc is handle to device context
+            HDC hdc = BeginPaint(hWindowMain, &ps); 
 
-            Ellipse(hdc, 100, 100, 200, 200); // draws ellipse in window
-            SelectObject(hdc, oldPen);
-            DeleteObject(hPen);
+            paintGameField(hWindowMain, hdc);
+
+            //paintSnake(hWindowMain, hdc);
+
             EndPaint(hWindowMain, &ps);
+
         }
+        break;
+    case WM_SIZE:
+        MoveAllButtons(hWindowMain);
         break;
     case WM_DESTROY:
         UnregisterHotKey(hWindowMain, ID_HOTKEY_1);
@@ -197,49 +215,78 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     return 0;
 }
 
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
+// below part is not needed, as I removed MENU from main window
 
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
-}
+// Message handler for about box.
+//INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+//{
+//    UNREFERENCED_PARAMETER(lParam);
+//    switch (message)
+//    {
+//    case WM_INITDIALOG:
+//        return (INT_PTR)TRUE;
+//
+//    case WM_COMMAND:
+//        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+//        {
+//            EndDialog(hDlg, LOWORD(wParam));
+//            return (INT_PTR)TRUE;
+//        }
+//        break;
+//    }
+//    return (INT_PTR)FALSE;
+//}
 
 int createButtons(HWND hWindowMain)
-{
-    button_counter = CreateWindowW(L"button", L"Counter + 1", 
+{ 
+    RECT ClientRect;
+
+    GetClientRect(hWindowMain, &ClientRect);
+
+    hButtonStart = CreateWindowW(L"button", L"Counter + 1", 
         WS_VISIBLE | WS_CHILD,
-        10, 10, 100, 50,
-        hWindowMain, BUTTON_COUNTER, NULL, NULL);
+        ClientRect.right - BUTTON1_SIZE_X, 0, BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
+        hWindowMain, BUTTON_START, NULL, NULL);
     
     return TRUE;
 }
 
 int createLabels(HWND hWindowMain)
 {
-    CreateWindowW(L"static", L"Counter: ",
+    RECT ClientRect;
+
+    GetClientRect(hWindowMain, &ClientRect);
+
+    hStaticText1 = CreateWindowW(L"static", L"Counter: ",
         WS_CHILD | WS_VISIBLE,
-        110, 60, 60, 25,
+        ClientRect.right - BUTTON1_SIZE_X, BUTTON1_SIZE_Y, 55, 25,
         hWindowMain, (HMENU) 1, NULL, NULL);
 
     hDynamicText1 = CreateWindowW(L"static", L"0",
         WS_CHILD | WS_VISIBLE | WS_BORDER,
-        170, 60, 55, 25,
+        ClientRect.right - BUTTON1_SIZE_X + 55, BUTTON1_SIZE_Y, 45, 25,
         hWindowMain, (HMENU) 2, NULL, NULL);
 
     return TRUE;
+}
+
+int MoveAllButtons(HWND hWindowMain)
+{
+    RECT ClientRect;
+    GetClientRect(hWindowMain, &ClientRect);
+    SetWindowPos(hButtonStart, NULL,
+        ClientRect.right - BUTTON1_SIZE_X, 0,
+        NULL, NULL, SWP_NOSIZE);
+
+    SetWindowPos(hStaticText1, NULL,
+        ClientRect.right - BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
+        NULL, NULL, SWP_NOSIZE);
+
+    SetWindowPos(hDynamicText1, NULL,
+        ClientRect.right - BUTTON1_SIZE_X + 55, BUTTON1_SIZE_Y,
+        NULL, NULL, SWP_NOSIZE);
+
+    return 1;
 }
 
 int counterIncrease()
@@ -253,4 +300,61 @@ int counterIncrease()
     SetWindowTextW(hDynamicText1, buf);
 
     return 1;
+}
+
+int paintGameField(HWND hWindowMain, HDC hdc)
+{
+    RECT ClientRect;
+
+    GetClientRect(hWindowMain, &ClientRect);
+
+    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+    HPEN hPen = CreatePen(PS_SOLID, 3, RGB(255, 255, 255));
+    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
+
+    Rectangle(hdc, ClientRect.left, ClientRect.top, ClientRect.right - BUTTON1_SIZE_X, ClientRect.bottom);
+   
+    SelectObject(hdc, hOldPen);
+    SelectObject(hdc, hOldBrush);
+
+    DeleteObject(hPen);
+    DeleteObject(hOldBrush);
+}
+
+int initSnake(HWND hWindowMain)
+{
+    RECT GameFieldRect;
+    GetClientRect(hWindowMain, &GameFieldRect);
+    GameFieldRect.right -= BUTTON1_SIZE_X;
+
+    snake.left = (GameFieldRect.right - GameFieldRect.left) / 2;
+    snake.right = snake.left + 50;
+    snake.top = (GameFieldRect.bottom - GameFieldRect.top) / 2;
+    snake.bottom = snake.top + 10;
+}
+
+int paintSnake(HWND hWindowMain, HDC hdc)
+{
+    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
+    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
+
+    Rectangle(hdc, snake.left, snake.top, snake.right, snake.bottom);
+    
+    SelectObject(hdc, hOldPen);
+    SelectObject(hdc, hOldBrush);
+    DeleteObject(hPen);
+    DeleteObject(hOldBrush);
+
+    return 1;
+}
+
+int moveSnake()
+{
+    snake.left += 1;
+    snake.right += 1;
+    Sleep(10);
 }
