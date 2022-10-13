@@ -1,23 +1,14 @@
 // MyGame.cpp : Defines the entry point for the application.
 //
 
-#include "framework.h"
 #include <strsafe.h>
-#include "MyGame.h"
-
-#define MAX_LOADSTRING 100
-#define ID_HOTKEY_1 1 // for hot key Ctrl + C
-#define C_BUTTON 0x43 // code of "C" from keyboard
-
-#define BUTTON_START 3 // N of button
-#define BUTTON1_SIZE_X 100
-#define BUTTON1_SIZE_Y 30
+#include "main.h"
 
 // Global Variables:
 HINSTANCE    hInst;                                // current instance
 WCHAR        szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR        szWindowClass[MAX_LOADSTRING];            // the main window class name
-HWND         hWindowMain = { 0 };
+BOOL         isGameStarted = FALSE;
 
 // All Button handlers
 HWND hButtonStart; // init button
@@ -26,8 +17,9 @@ HWND hDynamicText1; // init global text-window
 int counter = 0;
 
 // snake
-RECT snake = { 0 };
+HDC hdc;
 
+Snake snake;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -45,21 +37,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
-    if (!InitInstance(hInstance, nCmdShow))
+    if (!InitMainWindow(hInstance, nCmdShow))
     {
         return FALSE;
     }
-    /////////////// playground ///////////////////////
-    //usefull_staff(hWindowMain);
-    
-   
-    /////////////// playground ///////////////////////
 
     HACCEL hAccelTable = LoadAcceleratorsW(hInstance, MAKEINTRESOURCE(IDC_MYGAME));
 
     MSG msg = { 0 };
-    HDC hdc = GetDC(hWindowMain);
-
+   
     // Main message loop:
     while (GetMessageW(&msg, NULL, 0, 0))
     {
@@ -69,14 +55,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessageW(&msg);
             
         }
-        moveSnake();
-        paintSnake(hWindowMain, hdc);
+        
     }
 
     return (int) msg.wParam;
 }
-
-
 
 //
 //  FUNCTION: MyRegisterClass()
@@ -105,34 +88,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 }
 
 //
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   hInst = hInstance; // Store instance handle in our global variable
-
-   HWND hWindowMain = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
-
-   if (!hWindowMain)
-   {
-      return FALSE;
-   }
-
-   ShowWindow(hWindowMain, nCmdShow);
-   UpdateWindow(hWindowMain);
-
-   return TRUE;
-}
-
-//
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //          (venya: I changed name to MainWindowProcedure)
 //  PURPOSE: Processes messages for the main window.
@@ -151,10 +106,22 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             RegisterHotKey(hWindowMain, ID_HOTKEY_1, MOD_CONTROL, C_BUTTON);
             createButtons(hWindowMain);
             createLabels(hWindowMain);
-            initSnake(hWindowMain);
+
+            hdc = GetDC(hWindowMain);
+
+
             //hLabel1 = CreateLabel(hWindowMain);
             break;
         }
+    case WM_TIMER:
+    {
+        if (isGameStarted)
+        { 
+            moveSnake(hWindowMain);
+            paintSnake(hWindowMain, hdc);
+        }
+        
+    }
     case WM_HOTKEY:
         // change text on screen by hotkey
         { 
@@ -164,6 +131,29 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             break;
         }   
 
+    case WM_KEYDOWN:
+        {
+            switch (wParam)
+            {
+            case VK_UP:
+                snake.speedY = -snake.speed;
+                snake.speedX = 0;
+                break;
+            case VK_DOWN:
+                snake.speedY = snake.speed;
+                snake.speedX = 0;
+                break;
+            case VK_LEFT:
+                snake.speedY = 0;
+                snake.speedX = -snake.speed;
+                break;
+            case VK_RIGHT:
+                snake.speedY = 0;
+                snake.speedX = snake.speed;
+                break;
+            }
+        }
+        break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -171,11 +161,11 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             switch (wmId)
             {
             case BUTTON_START:
-                {
-                    counterIncrease();
-                    break;
-                }
-
+                isGameStarted = TRUE;
+                initSnake(hWindowMain);
+                SetTimer(hWindowMain, 2, 10, NULL);
+                SetFocus(hWindowMain);
+                break;
             // below part is not needed, as I removed MENU from main window
             /*case IDM_ABOUT:
                 DialogBoxW(hInst, MAKEINTRESOURCEW(IDD_ABOUTBOX), hWindowMain, About);
@@ -192,14 +182,11 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         {
             PAINTSTRUCT ps;
             // hdc is handle to device context
-            HDC hdc = BeginPaint(hWindowMain, &ps); 
+            HDC hdc = BeginPaint(hWindowMain, &ps);
 
             paintGameField(hWindowMain, hdc);
 
-            //paintSnake(hWindowMain, hdc);
-
             EndPaint(hWindowMain, &ps);
-
         }
         break;
     case WM_SIZE:
@@ -237,58 +224,6 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
 //    return (INT_PTR)FALSE;
 //}
 
-int createButtons(HWND hWindowMain)
-{ 
-    RECT ClientRect;
-
-    GetClientRect(hWindowMain, &ClientRect);
-
-    hButtonStart = CreateWindowW(L"button", L"Counter + 1", 
-        WS_VISIBLE | WS_CHILD,
-        ClientRect.right - BUTTON1_SIZE_X, 0, BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
-        hWindowMain, BUTTON_START, NULL, NULL);
-    
-    return TRUE;
-}
-
-int createLabels(HWND hWindowMain)
-{
-    RECT ClientRect;
-
-    GetClientRect(hWindowMain, &ClientRect);
-
-    hStaticText1 = CreateWindowW(L"static", L"Counter: ",
-        WS_CHILD | WS_VISIBLE,
-        ClientRect.right - BUTTON1_SIZE_X, BUTTON1_SIZE_Y, 55, 25,
-        hWindowMain, (HMENU) 1, NULL, NULL);
-
-    hDynamicText1 = CreateWindowW(L"static", L"0",
-        WS_CHILD | WS_VISIBLE | WS_BORDER,
-        ClientRect.right - BUTTON1_SIZE_X + 55, BUTTON1_SIZE_Y, 45, 25,
-        hWindowMain, (HMENU) 2, NULL, NULL);
-
-    return TRUE;
-}
-
-int MoveAllButtons(HWND hWindowMain)
-{
-    RECT ClientRect;
-    GetClientRect(hWindowMain, &ClientRect);
-    SetWindowPos(hButtonStart, NULL,
-        ClientRect.right - BUTTON1_SIZE_X, 0,
-        NULL, NULL, SWP_NOSIZE);
-
-    SetWindowPos(hStaticText1, NULL,
-        ClientRect.right - BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
-        NULL, NULL, SWP_NOSIZE);
-
-    SetWindowPos(hDynamicText1, NULL,
-        ClientRect.right - BUTTON1_SIZE_X + 55, BUTTON1_SIZE_Y,
-        NULL, NULL, SWP_NOSIZE);
-
-    return 1;
-}
-
 int counterIncrease()
 {
     counter++;
@@ -300,61 +235,4 @@ int counterIncrease()
     SetWindowTextW(hDynamicText1, buf);
 
     return 1;
-}
-
-int paintGameField(HWND hWindowMain, HDC hdc)
-{
-    RECT ClientRect;
-
-    GetClientRect(hWindowMain, &ClientRect);
-
-    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
-    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
-
-    HPEN hPen = CreatePen(PS_SOLID, 3, RGB(255, 255, 255));
-    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-
-    Rectangle(hdc, ClientRect.left, ClientRect.top, ClientRect.right - BUTTON1_SIZE_X, ClientRect.bottom);
-   
-    SelectObject(hdc, hOldPen);
-    SelectObject(hdc, hOldBrush);
-
-    DeleteObject(hPen);
-    DeleteObject(hOldBrush);
-}
-
-int initSnake(HWND hWindowMain)
-{
-    RECT GameFieldRect;
-    GetClientRect(hWindowMain, &GameFieldRect);
-    GameFieldRect.right -= BUTTON1_SIZE_X;
-
-    snake.left = (GameFieldRect.right - GameFieldRect.left) / 2;
-    snake.right = snake.left + 50;
-    snake.top = (GameFieldRect.bottom - GameFieldRect.top) / 2;
-    snake.bottom = snake.top + 10;
-}
-
-int paintSnake(HWND hWindowMain, HDC hdc)
-{
-    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
-    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
-    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
-    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-
-    Rectangle(hdc, snake.left, snake.top, snake.right, snake.bottom);
-    
-    SelectObject(hdc, hOldPen);
-    SelectObject(hdc, hOldBrush);
-    DeleteObject(hPen);
-    DeleteObject(hOldBrush);
-
-    return 1;
-}
-
-int moveSnake()
-{
-    snake.left += 1;
-    snake.right += 1;
-    Sleep(10);
 }

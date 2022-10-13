@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\interface">
+      <UniqueIdentifier>{e399c842-42e9-4a94-8978-00f035a6d929}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\interface">
+      <UniqueIdentifier>{0974daa2-4588-4005-9c5e-015a7a4be3a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\paint">
+      <UniqueIdentifier>{0eb351e3-6e34-4932-9061-8f56f2808177}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\paint">
+      <UniqueIdentifier>{972f1c1b-883d-44f3-9fea-4ae7acdeb651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gamelogic">
+      <UniqueIdentifier>{c45d75d7-2f32-40b8-9485-49dccae72d7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gamelogic">
+      <UniqueIdentifier>{30367f24-d4c8-40c2-a24d-77656b463f0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -24,16 +42,43 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MyGame.h">
+    <ClInclude Include="main.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="init.interface.h">
+      <Filter>Header Files\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="update.interface.h">
+      <Filter>Header Files\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="game.paint.h">
+      <Filter>Header Files\paint</Filter>
+    </ClInclude>
+    <ClInclude Include="snake.gamelogic.h">
+      <Filter>Header Files\gamelogic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MyGame.c">
+    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="unref_usefull staff.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="movement.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="init.interface.c">
+      <Filter>Source Files\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="update.interface.c">
+      <Filter>Source Files\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="game.paint.c">
+      <Filter>Source Files\paint</Filter>
+    </ClCompile>
+    <ClCompile Include="snake.gamelogic.c">
+      <Filter>Source Files\gamelogic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
