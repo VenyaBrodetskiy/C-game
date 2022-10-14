@@ -15,9 +15,10 @@ int counter = 0;
 
 // snake
 HDC hdc;
-RECT GameFieldRect;
+RECT PlayGroundInPixels;
+RECT PlayGroundInBlocks;
 Snake snake;
-char FieldMap[1920][1080];
+char PlayGroundMap[200][100];
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -33,9 +34,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING); // get szTitle
     LoadStringW(hInstance, IDC_MYGAME, szWindowClass, MAX_LOADSTRING); // get szWindowClass
     MyRegisterClass(hInstance);
+    
+    // init Playground for Snake 
+    PlayGroundInBlocks = CreatePlayGround(FIELD_WIDTH, FIELD_HEIGHT);
+    PlayGroundInPixels = GetPlayGroundInPixels(PlayGroundInBlocks, PIXEL_BLOCK);
 
     // Perform application initialization:
-    if (!InitMainWindow(hInstance, nCmdShow))
+    if (!InitMainWindow(hInstance, nCmdShow, PlayGroundInPixels))
     {
         return FALSE;
     }
@@ -99,8 +104,9 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_CREATE:
         {
             RegisterHotKey(hWindowMain, ID_HOTKEY_1, MOD_CONTROL, C_BUTTON);
-            createButtons(hWindowMain, GameFieldRect);
-            createLabels(hWindowMain, GameFieldRect);
+            
+            createButtons(hWindowMain, PlayGroundInPixels);
+            createLabels(hWindowMain, PlayGroundInPixels);
 
             hdc = GetDC(hWindowMain);
             break;
@@ -109,8 +115,8 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     {
         if (isGameStarted)
         { 
-            moveSnake(hWindowMain, GameFieldRect);
-            paintSnake(hWindowMain, hdc, GameFieldRect);
+            moveSnake(hWindowMain);
+            paintSnake(hWindowMain, hdc, PlayGroundInPixels);
         }
         
     }
@@ -134,10 +140,10 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             {
             case BUTTON_START:
                 isGameStarted = TRUE;
+                initPlayGround(PlayGroundInBlocks);
+                initSnake(PlayGroundInBlocks);
                 // TODO: When Game is started need to restrict window size changes
-                initYard(GameFieldRect);
-                initSnake(hWindowMain, GameFieldRect);
-                SetTimer(hWindowMain, 2, 16, NULL); // approx 60 fps
+                SetTimer(hWindowMain, 2, 300, NULL); // approx 60 fps
                 SetFocus(hWindowMain);
                 break;
             // below part is not needed, as I removed MENU from main window
@@ -158,14 +164,14 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             // hdc is handle to device context
             HDC hdc = BeginPaint(hWindowMain, &ps);
 
-            paintGameField(hdc, GameFieldRect);
+            paintGameField(hdc, PlayGroundInPixels);
 
             EndPaint(hWindowMain, &ps);
         }
         break;
     case WM_SIZE:
-        GameFieldRect = GetGameFieldSize(hWindowMain);
-        MoveAllButtons(hWindowMain, GameFieldRect);
+        // currently no need to use, as window size is frozen
+        //MoveAllButtons(hWindowMain, PlayGroundInPixels);
         break;
     case WM_DESTROY:
         UnregisterHotKey(hWindowMain, ID_HOTKEY_1);

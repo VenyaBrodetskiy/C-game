@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "main.h"
 
-int initSnake(HWND hWindowMain, RECT GameFieldRect);
-int moveSnake(HWND hWindowMain, RECT GameFieldRect);
+int initSnake(RECT PlayGroundInPixels);
+int moveSnake(HWND hWindowMain);
 int changeSnakeDirection(WPARAM wParam);
 int gameOver(HWND hWindowMain);

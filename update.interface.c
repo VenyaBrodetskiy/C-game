@@ -17,12 +17,3 @@ int MoveAllButtons(HWND hWindowMain, RECT GameField)
 
     return 1;
 }
-
-RECT GetGameFieldSize(HWND hWindowMain)
-{
-    RECT GameFieldRect;
-    GetClientRect(hWindowMain, &GameFieldRect);
-    GameFieldRect.right -= BUTTON1_SIZE_X;
-
-    return GameFieldRect;
-}
