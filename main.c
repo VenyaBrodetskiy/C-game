@@ -6,6 +6,7 @@ HINSTANCE    hInst;                                // current instance
 WCHAR        szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR        szWindowClass[MAX_LOADSTRING];            // the main window class name
 BOOL         isGameStarted = FALSE;
+BOOL         isKeyDown = FALSE;
 
 // All Button handlers
 HWND hButtonStart; // init button
@@ -79,8 +80,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     WindowClass.hInstance      = hInstance;
     WindowClass.hIcon          = LoadIconW(hInstance, MAKEINTRESOURCEW(IDI_MYGAME));
     WindowClass.hCursor        = LoadCursorW(NULL, IDC_ARROW);
-    WindowClass.hbrBackground  = (HBRUSH)(COLOR_WINDOW); // GetSysColorBrush(COLOR_3DFACE);
-    WindowClass.lpszMenuName   = MAKEINTRESOURCEW(NULL); //MAKEINTRESOURCEW(IDC_MYGAME);
+    WindowClass.hbrBackground  = (HBRUSH)(COLOR_WINDOW); 
+    WindowClass.lpszMenuName   = MAKEINTRESOURCEW(NULL); 
     WindowClass.lpszClassName  = szWindowClass;
     WindowClass.hIconSm        = LoadIconW(WindowClass.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -103,8 +104,6 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     {
     case WM_CREATE:
         {
-            RegisterHotKey(hWindowMain, ID_HOTKEY_1, MOD_CONTROL, C_BUTTON);
-            
             createButtons(hWindowMain, PlayGroundInPixels);
             createLabels(hWindowMain, PlayGroundInPixels);
 
@@ -114,23 +113,19 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_TIMER:
     {
         if (isGameStarted)
-        { 
+        {
+            isKeyDown = FALSE;
             moveSnake(hWindowMain);
-            paintSnake(hWindowMain, hdc, PlayGroundInPixels);
+            drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
         }
         
     }
-    case WM_HOTKEY:
-        // change text on screen by hotkey
-        { 
-            if (wParam == ID_HOTKEY_1) {
-                counterIncrease();
-            }
-            break;
-        }   
-
     case WM_KEYDOWN:
-        changeSnakeDirection(wParam);
+        isKeyDown = changeSnakeDirection(wParam, isKeyDown);
+        break;
+
+    case WM_KEYUP:
+        if (wParam == VK_RETURN && !isGameStarted) isGameStarted = startNewGame(hWindowMain);
         break;
     case WM_COMMAND:
         {
@@ -139,20 +134,9 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             switch (wmId)
             {
             case BUTTON_START:
-                isGameStarted = TRUE;
-                initPlayGround(PlayGroundInBlocks);
-                initSnake(PlayGroundInBlocks);
-                // TODO: When Game is started need to restrict window size changes
-                SetTimer(hWindowMain, 2, 300, NULL); // approx 60 fps
-                SetFocus(hWindowMain);
+                isGameStarted = startNewGame(hWindowMain);
                 break;
-            // below part is not needed, as I removed MENU from main window
-            /*case IDM_ABOUT:
-                DialogBoxW(hInst, MAKEINTRESOURCEW(IDD_ABOUTBOX), hWindowMain, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWindowMain);
-                break;*/
+
             default:
                 return DefWindowProcW(hWindowMain, message, wParam, lParam);
             }
@@ -174,7 +158,6 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         //MoveAllButtons(hWindowMain, PlayGroundInPixels);
         break;
     case WM_DESTROY:
-        UnregisterHotKey(hWindowMain, ID_HOTKEY_1);
         PostQuitMessage(0);
         break;
     default:
@@ -183,37 +166,12 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     return 0;
 }
 
-// below part is not needed, as I removed MENU from main window
-
-// Message handler for about box.
-//INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-//{
-//    UNREFERENCED_PARAMETER(lParam);
-//    switch (message)
-//    {
-//    case WM_INITDIALOG:
-//        return (INT_PTR)TRUE;
-//
-//    case WM_COMMAND:
-//        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-//        {
-//            EndDialog(hDlg, LOWORD(wParam));
-//            return (INT_PTR)TRUE;
-//        }
-//        break;
-//    }
-//    return (INT_PTR)FALSE;
-//}
-
-int counterIncrease()
+BOOL startNewGame(HWND hWindowMain)
 {
-    counter++;
-    
-    wchar_t buf[10];
-    UINT buf_len = 10;
+    initPlayGround(PlayGroundInBlocks);
+    initSnake(PlayGroundInBlocks);
+    SetTimer(hWindowMain, 2, DEFAULT_SPEED, NULL);
+    SetFocus(hWindowMain);
 
-    StringCbPrintfW(buf, buf_len, L"%d", counter);
-    SetWindowTextW(hDynamicText1, buf);
-
-    return 1;
+    return TRUE;
 }

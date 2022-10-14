@@ -2,7 +2,8 @@
 #include "framework.h"
 #include "main.h"
 
-int initSnake(RECT PlayGroundInPixels);
+
 int moveSnake(HWND hWindowMain);
-int changeSnakeDirection(WPARAM wParam);
+BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown);
+int updateScore(HWND hDynamicText, int score);
 int gameOver(HWND hWindowMain);
