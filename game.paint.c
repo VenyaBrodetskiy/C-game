@@ -34,7 +34,13 @@ int paintSnake(HWND hWindowMain, HDC hdc, RECT GameField)
     HBRUSH hOldBrush = (HBRUSH)SelectObject(bufferDC, hBrush);
     HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
     HPEN hOldPen = (HPEN)SelectObject(bufferDC, hPen);
-    Rectangle(bufferDC, snake.position.left, snake.position.top, snake.position.right, snake.position.bottom);
+    
+    for (int index = snake.indexOfHead; index <= snake.indexOfTail; index++)
+    {
+        SetPixel(bufferDC, snake.body[index].x, snake.body[index].y, RGB(0, 0, 200));
+    }
+
+     //Rectangle(bufferDC, snake.position.left, snake.position.top, snake.position.right, snake.position.bottom);
 
     // copy from buffer to dc
     BitBlt(hdc, GameField.left, GameField.top, GameField.right, GameField.bottom,
