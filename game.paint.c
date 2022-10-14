@@ -23,7 +23,7 @@ int paintGameField(HDC hdc, RECT PlayGroundInPixels)
     return 1;
 }
 
-int paintSnake(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
+int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
 {
     // create buffer - to draw in memory
     HDC bufferDC = CreateCompatibleDC(hdc);
@@ -46,26 +46,15 @@ int paintSnake(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
             switch (PlayGroundMap[x][y])
             {
             case SNAKE:
-            {
-                Rectangle(bufferDC,
-                    x * PIXEL_BLOCK, y * PIXEL_BLOCK,
-                    x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+                if (snake.head.x == x && snake.head.y == y) paintSquareBlock(bufferDC, x, y, COLOR_SNAKE, COLOR_SNAKE);
+                else paintSquareBlock(bufferDC, x, y, COLOR_SNAKE, RGB(0, 0, 100));
                 break;
-            }
             case WALL:
-            {
-                Rectangle(bufferDC,
-                    x * PIXEL_BLOCK, y * PIXEL_BLOCK,
-                    x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+                paintSquareBlock(bufferDC, x, y, COLOR_WALL, COLOR_WALL);
                 break;
-            }
             case FOOD:
-            {
-                Rectangle(bufferDC,
-                    x * PIXEL_BLOCK, y * PIXEL_BLOCK,
-                    x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+                paintRoundBlock(bufferDC, x, y, COLOR_FOOD, COLOR_FOOD);
                 break;
-            }
             }
             
         }
@@ -81,7 +70,45 @@ int paintSnake(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
     SelectObject(bufferDC, hOldPen);
     SelectObject(bufferDC, hOldBrush);
     DeleteObject(hPen);
-    DeleteObject(hOldBrush);
+    DeleteObject(hBrush);
+
+    return 1;
+}
+
+int paintSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen) 
+{
+    HBRUSH hBrush = CreateSolidBrush(brush);
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(dc, hBrush);
+    HPEN hPen = CreatePen(PS_SOLID, 1, pen);
+    HPEN hOldPen = (HPEN)SelectObject(dc, hPen);
+
+    Rectangle(dc,
+        x * PIXEL_BLOCK, y * PIXEL_BLOCK,
+        x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+
+    SelectObject(dc, hOldPen);
+    SelectObject(dc, hOldBrush);
+    DeleteObject(hPen);
+    DeleteObject(hBrush);
+
+    return 1;
+}
+
+int paintRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen)
+{
+    HBRUSH hBrush = CreateSolidBrush(brush);
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(dc, hBrush);
+    HPEN hPen = CreatePen(PS_SOLID, 1, pen);
+    HPEN hOldPen = (HPEN)SelectObject(dc, hPen);
+
+    Ellipse(dc,
+        x * PIXEL_BLOCK, y * PIXEL_BLOCK,
+        x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+
+    SelectObject(dc, hOldPen);
+    SelectObject(dc, hOldBrush);
+    DeleteObject(hPen);
+    DeleteObject(hBrush);
 
     return 1;
 }

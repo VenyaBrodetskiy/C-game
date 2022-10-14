@@ -19,7 +19,7 @@ BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT PlayGroundInPixels)
     hInst = hInstance; // Store instance handle in our global variable
 
     HWND hWindowMain = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
-        CW_USEDEFAULT, 0, PlayGroundInPixels.right + BUTTON1_SIZE_X + 17, PlayGroundInPixels.bottom + 39, NULL, NULL, hInstance, NULL);
+        0, 0, PlayGroundInPixels.right + BUTTON1_SIZE_X + 17, PlayGroundInPixels.bottom + 39, NULL, NULL, hInstance, NULL);
     // 17 and 40 are just numbers to make it more beautiful. later change to expressions
 
     if (!hWindowMain)
@@ -56,26 +56,4 @@ int createLabels(HWND hWindowMain, RECT PlayGroundInPixels)
         hWindowMain, (HMENU)2, NULL, NULL);
 
     return TRUE;
-}
-
-RECT CreatePlayGround(int widthBlock, int heightBlock)
-{
-    RECT PlayGroundInBlocks;
-    PlayGroundInBlocks.left = 1;
-    PlayGroundInBlocks.top = 1;
-    PlayGroundInBlocks.bottom = heightBlock;
-    PlayGroundInBlocks.right = widthBlock;
-
-    return PlayGroundInBlocks;
-}
-
-RECT GetPlayGroundInPixels(RECT PlayGroundInBlocks, int pixelBlock)
-{
-    RECT PlayGroundInPixels;
-    PlayGroundInPixels.left = 0;
-    PlayGroundInPixels.top = 0;
-    PlayGroundInPixels.right = PlayGroundInBlocks.right * pixelBlock;
-    PlayGroundInPixels.bottom = PlayGroundInBlocks.bottom * pixelBlock;
-
-    return PlayGroundInPixels;
 }

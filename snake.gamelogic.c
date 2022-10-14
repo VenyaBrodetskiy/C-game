@@ -5,54 +5,45 @@ extern char PlayGroundMap[200][100];
 extern RECT PlayGroundInBlocks;
 extern RECT PlayGroundInPixels;
 extern HDC hdc;
+extern HWND hDynamicText1;
+extern HWND hButtonStart;
+extern BOOL isGameStarted;
 
-int initSnake(RECT GameField)
-{
-    // set speed and direction
-    snake.speed = DEFAULT_SPEED;
-    snake.direct = RIGHT;
-
-    // init snake
-    int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
-    int center_y = (PlayGroundInBlocks.bottom - PlayGroundInBlocks.top) / 2;
-    for (int index = 0; index < SNAKE_LENGHT; index++) 
-    {
-        snake.body[index].x = center_x - index;
-        snake.body[index].y = center_y;
-        PlayGroundMap[snake.body[index].x][snake.body[index].y] = SNAKE;
-    }
-
-    // find head and tail
-    snake.indexOfHead = 0;
-    snake.indexOfTail = SNAKE_LENGHT - 1;
-
-    snake.head = snake.body[0];
-    snake.tail = snake.body[SNAKE_LENGHT - 1];
-
-    generateFood(PlayGroundInBlocks);
-
-    return 1;
-}
-
-int changeSnakeDirection(WPARAM wParam)
+BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown)
 {
     switch (wParam)
     {
     case VK_UP:
-        if (snake.direct != DOWN) snake.direct = UP;
+        if (snake.direct != DOWN && !isKeyDown) 
+        {
+            snake.direct = UP;
+            isKeyDown = TRUE;
+        }
         break;
     case VK_DOWN:
-        if (snake.direct != UP) snake.direct = DOWN;
+        if (snake.direct != UP && !isKeyDown)
+        {
+            snake.direct = DOWN;
+            isKeyDown = TRUE;
+        }
         break;
     case VK_LEFT:
-        if (snake.direct != RIGHT) snake.direct = LEFT;
+        if (snake.direct != RIGHT && !isKeyDown)
+        {
+            snake.direct = LEFT;
+            isKeyDown = TRUE;
+        }
         break;
     case VK_RIGHT:
-        if (snake.direct != LEFT) snake.direct = RIGHT;
+        if (snake.direct != LEFT && !isKeyDown)
+        {
+            snake.direct = RIGHT;
+            isKeyDown = TRUE;
+        }
         break;
     }
 
-    return 1;
+    return isKeyDown;
 }
 
 int moveSnake(HWND hWindowMain)
@@ -80,13 +71,14 @@ int moveSnake(HWND hWindowMain)
     case WALL:
     case SNAKE:
     {
-        KillTimer(hWindowMain, 2);
-        paintSnake(hWindowMain, hdc, PlayGroundInPixels);
-        MessageBoxW(NULL, L"Game is over", L"Game Over", MB_OK);
+        gameOver(hWindowMain);
     }
         break;
     case FOOD:
     {
+        snake.score++;
+        updateScore(hDynamicText1, snake.score);
+
         snake.body[snake.indexOfTail + 1] = snake.tail;
 
         for (int index = snake.indexOfTail; index > snake.indexOfHead; index--)
@@ -116,6 +108,27 @@ int moveSnake(HWND hWindowMain)
     }
         break;
     }
+
+    return 1;
+}
+
+int updateScore(HWND hDynamicText, int score)
+{
+    wchar_t buf[10];
+    UINT buf_len = 10;
+
+    StringCbPrintfW(buf, buf_len, L"%d", score);
+    SetWindowTextW(hDynamicText, buf);
+
+    return 1;
+}
+
+int gameOver(HWND hWindowMain)
+{
+    KillTimer(hWindowMain, 2);
+    drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
+    MessageBoxW(hWindowMain, L"Game is over", L"Game Over", MB_OK);
+    isGameStarted = FALSE;
 
     return 1;
 }

@@ -12,8 +12,6 @@
 #include "game.paint.h"
 
 #define MAX_LOADSTRING 100
-#define ID_HOTKEY_1 1 // for hot key Ctrl + C
-#define C_BUTTON 0x43 // code of "C" from keyboard
 
 #define BUTTON_START 3 // N of button
 #define BUTTON1_SIZE_X 100
@@ -28,17 +26,19 @@
 #define DYN_TEXT1_Y STAT_TEXT1_Y
 
 // game params
-#define DEFAULT_SPEED 3
-#define SNAKE_LENGHT 2
+#define DEFAULT_SPEED 100
+#define SNAKE_LENGHT 5
 
-//
+// 
 #define PIXEL_BLOCK 20
 #define PG_BORDER PIXEL_BLOCK
 #define FIELD_WIDTH 60
 #define FIELD_HEIGHT 35
 
 // Colors
-#define COLOR_SNAKE RGB(0, 0, 200)
+#define COLOR_SNAKE RGB(128, 128, 255)
+#define COLOR_WALL RGB(0, 0, 128)
+#define COLOR_FOOD RGB(255, 128, 128)
 
 
 typedef struct Point
@@ -63,13 +63,13 @@ enum Field {
 
 typedef struct Snake
 {
-    int speed;
     enum Direct direct;
     Point body[1000];
     int indexOfHead;
     int indexOfTail;
     Point head;
     Point tail;
+    int score;
 } Snake, *pSnake;
 
 // Forward declarations of functions included in this code module:
@@ -77,4 +77,4 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 LRESULT CALLBACK    MainWindowProcedure(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int counterIncrease();
+BOOL startNewGame(HWND hWindowMain);
