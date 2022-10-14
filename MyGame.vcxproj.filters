@@ -57,7 +57,7 @@
     <ClInclude Include="snake.gamelogic.h">
       <Filter>Header Files\gamelogic</Filter>
     </ClInclude>
-    <ClInclude Include="yard.gamelogic.h">
+    <ClInclude Include="playground.gamelogic.h">
       <Filter>Header Files\gamelogic</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,7 +83,7 @@
     <ClCompile Include="snake.gamelogic.c">
       <Filter>Source Files\gamelogic</Filter>
     </ClCompile>
-    <ClCompile Include="yard.gamelogic.c">
+    <ClCompile Include="playground.gamelogic.c">
       <Filter>Source Files\gamelogic</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,49 +1,78 @@
 #include "game.paint.h"
 
 extern Snake snake;
+extern RECT PlayGroundInBlocks;
+extern char PlayGroundMap[200][100];
 
-int paintGameField(HDC hdc, RECT GameField)
+int paintGameField(HDC hdc, RECT PlayGroundInPixels)
 {
     HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
     HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
-    HPEN hPen = CreatePen(PS_SOLID, 3, RGB(255, 255, 255));
+    HPEN hPen = CreatePen(PS_SOLID, 0, RGB(0, 0, 200));
     HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
 
-    Rectangle(hdc, GameField.left, GameField.top, GameField.right, GameField.bottom);
+    Rectangle(hdc, PlayGroundInPixels.left, PlayGroundInPixels.top, PlayGroundInPixels.right, PlayGroundInPixels.bottom);
 
     SelectObject(hdc, hOldPen);
     SelectObject(hdc, hOldBrush);
 
     DeleteObject(hPen);
     DeleteObject(hOldBrush);
+
+    return 1;
 }
 
-int paintSnake(HWND hWindowMain, HDC hdc, RECT GameField)
+int paintSnake(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
 {
     // create buffer - to draw in memory
     HDC bufferDC = CreateCompatibleDC(hdc);
     HBITMAP bufferBitMap = CreateCompatibleBitmap(hdc,
-        GameField.right - GameField.left, GameField.bottom - GameField.top);
+        PlayGroundInPixels.right - PlayGroundInPixels.left, PlayGroundInPixels.bottom - PlayGroundInPixels.top);
     SelectObject(bufferDC, bufferBitMap);
 
     // now we paint in buffer
-    paintGameField(bufferDC, GameField);
+    paintGameField(bufferDC, PlayGroundInPixels);
 
     HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
     HBRUSH hOldBrush = (HBRUSH)SelectObject(bufferDC, hBrush);
     HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
     HPEN hOldPen = (HPEN)SelectObject(bufferDC, hPen);
-    
-    for (int index = snake.indexOfHead; index <= snake.indexOfTail; index++)
+
+    for (int x = 0; x <= PlayGroundInBlocks.right; x++) 
     {
-        SetPixel(bufferDC, snake.body[index].x, snake.body[index].y, RGB(0, 0, 200));
+        for (int y = 0; y <= PlayGroundInBlocks.bottom; y++)
+        {
+            switch (PlayGroundMap[x][y])
+            {
+            case SNAKE:
+            {
+                Rectangle(bufferDC,
+                    x * PIXEL_BLOCK, y * PIXEL_BLOCK,
+                    x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+                break;
+            }
+            case WALL:
+            {
+                Rectangle(bufferDC,
+                    x * PIXEL_BLOCK, y * PIXEL_BLOCK,
+                    x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+                break;
+            }
+            case FOOD:
+            {
+                Rectangle(bufferDC,
+                    x * PIXEL_BLOCK, y * PIXEL_BLOCK,
+                    x * PIXEL_BLOCK + PIXEL_BLOCK, y * PIXEL_BLOCK + PIXEL_BLOCK);
+                break;
+            }
+            }
+            
+        }
     }
 
-     //Rectangle(bufferDC, snake.position.left, snake.position.top, snake.position.right, snake.position.bottom);
-
     // copy from buffer to dc
-    BitBlt(hdc, GameField.left, GameField.top, GameField.right, GameField.bottom,
+    BitBlt(hdc, 0, 0, PlayGroundInPixels.right, PlayGroundInPixels.bottom,
         bufferDC, 0, 0, SRCCOPY);
     // delete buffer
     DeleteDC(bufferDC);
