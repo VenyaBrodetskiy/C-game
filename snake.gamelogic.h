@@ -5,3 +5,4 @@
 int initSnake(HWND hWindowMain, RECT GameFieldRect);
 int moveSnake(HWND hWindowMain, RECT GameFieldRect);
 int changeSnakeDirection(WPARAM wParam);
+int gameOver(HWND hWindowMain);

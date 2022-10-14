@@ -17,6 +17,7 @@ int counter = 0;
 HDC hdc;
 RECT GameFieldRect;
 Snake snake;
+char FieldMap[1920][1080];
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -134,6 +135,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             case BUTTON_START:
                 isGameStarted = TRUE;
                 // TODO: When Game is started need to restrict window size changes
+                initYard(GameFieldRect);
                 initSnake(hWindowMain, GameFieldRect);
                 SetTimer(hWindowMain, 2, 16, NULL); // approx 60 fps
                 SetFocus(hWindowMain);

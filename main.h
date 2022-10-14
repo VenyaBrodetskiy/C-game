@@ -5,6 +5,7 @@
 #include "framework.h"
 
 #include "snake.gamelogic.h"
+#include "yard.gamelogic.h"
 #include "init.interface.h"
 #include "update.interface.h"
 #include "game.paint.h"
@@ -27,13 +28,35 @@
 #define DYN_TEXT1_Y STAT_TEXT1_Y
 
 #define DEFAULT_SPEED 3
+#define SNAKE_LENGHT 80
+
+typedef struct Point
+{
+    int x;
+    int y;
+} Point;
+
+typedef enum Direct {
+    RIGHT,
+    LEFT,
+    UP,
+    DOWN
+};
+
+typedef enum Field {
+    EMPTY,
+    SNAKE,
+    WALL,
+    FOOD
+};
 
 typedef struct Snake
 {
-    RECT position;
     int speed;
-    int speedX;
-    int speedY;
+    enum Direct direct;
+    Point body[1000];
+    int indexOfHead;
+    int indexOfTail;
 } Snake, *pSnake;
 
 // Forward declarations of functions included in this code module:
