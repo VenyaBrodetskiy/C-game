@@ -6,7 +6,6 @@ extern RECT PlayGroundInBlocks;
 extern RECT PlayGroundInPixels;
 extern HDC hdc;
 extern HWND hDynamicText1;
-extern HWND hButtonStart;
 extern BOOL isGameStarted;
 
 BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown)

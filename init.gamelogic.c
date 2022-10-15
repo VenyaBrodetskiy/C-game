@@ -3,7 +3,7 @@
 extern char PlayGroundMap[200][100];
 extern Snake snake;
 
-int initPlayGround(RECT PlayGroundInBlocks) 
+int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 {
 	if (PlayGroundInBlocks.bottom <= 1 || PlayGroundInBlocks.right <= 1) return 0;
 	
@@ -15,7 +15,7 @@ int initPlayGround(RECT PlayGroundInBlocks)
 	}
 
 	// build walls
-	if (ENABLE_WALLS == 1)
+	if (isEnabledWalls == 1)
 	{
 		for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
 			PlayGroundMap[x][0] = WALL;
