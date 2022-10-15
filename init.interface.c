@@ -48,12 +48,12 @@ int createLabels(HWND hWindowMain, RECT PlayGroundInPixels)
     hStaticText1 = CreateWindowW(L"static", L"Points: ",
         WS_CHILD | WS_VISIBLE,
         PlayGroundInPixels.right, BUTTON1_SIZE_Y, STAT_TEXT1_X, STAT_TEXT1_Y,
-        hWindowMain, (HMENU)1, NULL, NULL);
+        hWindowMain, (HMENU)STATIC_TEXT1, NULL, NULL);
 
     hDynamicText1 = CreateWindowW(L"static", L"0",
         WS_CHILD | WS_VISIBLE | WS_BORDER,
         PlayGroundInPixels.right + STAT_TEXT1_X, BUTTON1_SIZE_Y, DYN_TEXT1_X, DYN_TEXT1_Y,
-        hWindowMain, (HMENU)2, NULL, NULL);
+        hWindowMain, (HMENU)DYNAMIC_TEXT1, NULL, NULL);
 
     return TRUE;
 }

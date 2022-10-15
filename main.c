@@ -12,7 +12,6 @@ BOOL         isKeyDown = FALSE;
 HWND hButtonStart; // init button
 HWND hStaticText1;
 HWND hDynamicText1; // init global text-window
-int counter = 0;
 
 // snake
 HDC hdc;
@@ -110,6 +109,21 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             hdc = GetDC(hWindowMain);
             break;
         }
+    case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        // Parse the menu selections:
+        switch (wmId)
+        {
+        case BUTTON_START:
+            isGameStarted = startNewGame(hWindowMain);
+            break;
+
+        default:
+            return DefWindowProcW(hWindowMain, message, wParam, lParam);
+        }
+    }
+    break;
     case WM_TIMER:
     {
         if (isGameStarted)
@@ -127,21 +141,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_KEYUP:
         if (wParam == VK_RETURN && !isGameStarted) isGameStarted = startNewGame(hWindowMain);
         break;
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case BUTTON_START:
-                isGameStarted = startNewGame(hWindowMain);
-                break;
-
-            default:
-                return DefWindowProcW(hWindowMain, message, wParam, lParam);
-            }
-        }
-        break;
+    
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -170,7 +170,7 @@ BOOL startNewGame(HWND hWindowMain)
 {
     initPlayGround(PlayGroundInBlocks);
     initSnake(PlayGroundInBlocks);
-    SetTimer(hWindowMain, 2, DEFAULT_SPEED, NULL);
+    SetTimer(hWindowMain, GAME_TIMER, DEFAULT_SPEED, NULL);
     SetFocus(hWindowMain);
 
     return TRUE;

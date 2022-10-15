@@ -1,4 +1,4 @@
-#include "playground.gamelogic.h"
+#include "init.gamelogic.h"
 
 extern char PlayGroundMap[200][100];
 extern Snake snake;
@@ -15,17 +15,20 @@ int initPlayGround(RECT PlayGroundInBlocks)
 	}
 
 	// build walls
-	for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
-		PlayGroundMap[x][0] = WALL;
-	}
-	for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
-		PlayGroundMap[x][PlayGroundInBlocks.bottom - 1] = WALL;
-	}
-	for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
-		PlayGroundMap[0][y] = WALL;
-	}
-	for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
-		PlayGroundMap[PlayGroundInBlocks.right - 1][y] = WALL;
+	if (ENABLE_WALLS == 1)
+	{
+		for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
+			PlayGroundMap[x][0] = WALL;
+		}
+		for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
+			PlayGroundMap[x][PlayGroundInBlocks.bottom - 1] = WALL;
+		}
+		for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
+			PlayGroundMap[0][y] = WALL;
+		}
+		for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
+			PlayGroundMap[PlayGroundInBlocks.right - 1][y] = WALL;
+		}
 	}
 
 	return 1;
@@ -50,7 +53,6 @@ int initSnake(RECT PlayGroundInBlocks)
 	}
 
 	// find head and tail
-	snake.indexOfHead = 0;
 	snake.indexOfTail = SNAKE_LENGHT - 1;
 
 	snake.head = snake.body[0];

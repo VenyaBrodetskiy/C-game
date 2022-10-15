@@ -136,7 +136,7 @@
     <ClInclude Include="snake.gamelogic.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="update.interface.h" />
-    <ClInclude Include="playground.gamelogic.h" />
+    <ClInclude Include="init.gamelogic.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.paint.c" />
@@ -146,7 +146,7 @@
     <ClCompile Include="snake.gamelogic.c" />
     <ClCompile Include="unref_usefull staff.c" />
     <ClCompile Include="update.interface.c" />
-    <ClCompile Include="playground.gamelogic.c" />
+    <ClCompile Include="init.gamelogic.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyGame.rc" />
