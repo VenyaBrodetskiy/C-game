@@ -6,10 +6,10 @@ extern char PlayGroundMap[200][100];
 
 int paintGameField(HDC hdc, RECT PlayGroundInPixels)
 {
-    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+    HBRUSH hBrush = CreateSolidBrush(COLOR_BLACK);
     HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
-    HPEN hPen = CreatePen(PS_SOLID, 0, RGB(0, 0, 200));
+    HPEN hPen = CreatePen(PS_SOLID, 1, COLOR_BLACK);
     HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
 
     Rectangle(hdc, PlayGroundInPixels.left, PlayGroundInPixels.top, PlayGroundInPixels.right, PlayGroundInPixels.bottom);
@@ -18,7 +18,7 @@ int paintGameField(HDC hdc, RECT PlayGroundInPixels)
     SelectObject(hdc, hOldBrush);
 
     DeleteObject(hPen);
-    DeleteObject(hOldBrush);
+    DeleteObject(hBrush);
 
     return 1;
 }
@@ -31,13 +31,8 @@ int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
         PlayGroundInPixels.right - PlayGroundInPixels.left, PlayGroundInPixels.bottom - PlayGroundInPixels.top);
     SelectObject(bufferDC, bufferBitMap);
 
-    // now we paint in buffer
+    // from here we paint in buffer
     paintGameField(bufferDC, PlayGroundInPixels);
-
-    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
-    HBRUSH hOldBrush = (HBRUSH)SelectObject(bufferDC, hBrush);
-    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
-    HPEN hOldPen = (HPEN)SelectObject(bufferDC, hPen);
 
     for (int x = 0; x <= PlayGroundInBlocks.right; x++) 
     {
@@ -63,14 +58,10 @@ int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
     // copy from buffer to dc
     BitBlt(hdc, 0, 0, PlayGroundInPixels.right, PlayGroundInPixels.bottom,
         bufferDC, 0, 0, SRCCOPY);
+    
     // delete buffer
     DeleteDC(bufferDC);
     DeleteObject(bufferBitMap);
-
-    SelectObject(bufferDC, hOldPen);
-    SelectObject(bufferDC, hOldBrush);
-    DeleteObject(hPen);
-    DeleteObject(hBrush);
 
     return 1;
 }

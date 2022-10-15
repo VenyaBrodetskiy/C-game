@@ -5,7 +5,7 @@
 #include "framework.h"
 
 #include "snake.gamelogic.h"
-#include "playground.gamelogic.h"
+#include "init.gamelogic.h"
 #include "init.interface.h"
 #include "update.interface.h"
 #include "game.paint.h"
@@ -13,25 +13,25 @@
 
 #define MAX_LOADSTRING 100
 
-#define BUTTON_START 3 // N of button
+// button start sizes
 #define BUTTON1_SIZE_X 100
 #define BUTTON1_SIZE_Y 30
 
-// static text parameters
+// static text sizes
 #define STAT_TEXT1_X 55
 #define STAT_TEXT1_Y 25
 
-// dynamic text parameters
+// dynamic text sizes
 #define DYN_TEXT1_X 45
 #define DYN_TEXT1_Y STAT_TEXT1_Y
 
 // game params
 #define DEFAULT_SPEED 100
 #define SNAKE_LENGHT 5
+#define ENABLE_WALLS 0
 
-// 
+// game interface params
 #define PIXEL_BLOCK 20
-#define PG_BORDER PIXEL_BLOCK
 #define FIELD_WIDTH 60
 #define FIELD_HEIGHT 35
 
@@ -39,7 +39,18 @@
 #define COLOR_SNAKE RGB(128, 128, 255)
 #define COLOR_WALL RGB(0, 0, 128)
 #define COLOR_FOOD RGB(255, 128, 128)
+#define COLOR_BLACK RGB(0, 0, 0)
 
+enum Buttons {
+    BUTTON_START,
+    STATIC_TEXT1,
+    DYNAMIC_TEXT1,
+};
+
+enum Timers {
+    GAME_TIMER,
+    FOOD_TIMER
+};
 
 typedef struct Point
 {
@@ -65,10 +76,9 @@ typedef struct Snake
 {
     enum Direct direct;
     Point body[1000];
-    int indexOfHead;
-    int indexOfTail;
     Point head;
     Point tail;
+    int indexOfTail;
     int score;
 } Snake, *pSnake;
 
