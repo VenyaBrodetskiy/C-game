@@ -28,7 +28,6 @@
 // game params
 #define DEFAULT_SPEED 100
 #define SNAKE_LENGHT 5
-#define ENABLE_WALLS 0
 
 // game interface params
 #define PIXEL_BLOCK 20
@@ -45,6 +44,9 @@ enum Buttons {
     BUTTON_START,
     STATIC_TEXT1,
     DYNAMIC_TEXT1,
+    GROUP_BOX,
+    RADIO_WALLS,
+    RADIO_NOWALLS
 };
 
 enum Timers {

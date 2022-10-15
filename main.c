@@ -7,6 +7,7 @@ WCHAR        szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR        szWindowClass[MAX_LOADSTRING];            // the main window class name
 BOOL         isGameStarted = FALSE;
 BOOL         isKeyDown = FALSE;
+BOOL         isEnabledWalls = FALSE;
 
 // All Button handlers
 HWND hButtonStart; // init button
@@ -118,7 +119,12 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         case BUTTON_START:
             isGameStarted = startNewGame(hWindowMain);
             break;
-
+        case RADIO_NOWALLS:
+            isEnabledWalls = FALSE;
+            break;
+        case RADIO_WALLS:
+            isEnabledWalls = TRUE;
+            break;
         default:
             return DefWindowProcW(hWindowMain, message, wParam, lParam);
         }
@@ -168,7 +174,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
 
 BOOL startNewGame(HWND hWindowMain)
 {
-    initPlayGround(PlayGroundInBlocks);
+    initPlayGround(PlayGroundInBlocks, isEnabledWalls);
     initSnake(PlayGroundInBlocks);
     SetTimer(hWindowMain, GAME_TIMER, DEFAULT_SPEED, NULL);
     SetFocus(hWindowMain);

@@ -1,4 +1,5 @@
 #include "update.interface.h"
+// currently this module is not used, because screen
 extern HWND hButtonStart, hStaticText1, hDynamicText1;
 
 int MoveAllButtons(HWND hWindowMain, RECT GameField)

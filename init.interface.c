@@ -37,8 +37,21 @@ int createButtons(HWND hWindowMain, RECT PlayGroundInPixels)
 {
     hButtonStart = CreateWindowW(L"button", L"Start game",
         WS_VISIBLE | WS_CHILD,
-        PlayGroundInPixels.right, 0, BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
+        PlayGroundInPixels.right + 1, 0, BUTTON1_SIZE_X, BUTTON1_SIZE_Y,
         hWindowMain, (HMENU)BUTTON_START, 0, NULL);
+
+    CreateWindowW(L"Button", L"Choose mode",
+        WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+        PlayGroundInPixels.right + 1, BUTTON1_SIZE_Y + STAT_TEXT1_Y + 10, STAT_TEXT1_X + DYN_TEXT1_X, 80,
+        hWindowMain, (HMENU)GROUP_BOX, 0, NULL);
+    CreateWindowW(L"Button", L"No walls",
+        WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+        PlayGroundInPixels.right + 4, BUTTON1_SIZE_Y + STAT_TEXT1_Y + 30, STAT_TEXT1_X + DYN_TEXT1_X, STAT_TEXT1_Y,
+        hWindowMain, (HMENU)RADIO_NOWALLS, 0, NULL);
+    CreateWindowW(L"Button", L"With walls",
+        WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+        PlayGroundInPixels.right + 4, BUTTON1_SIZE_Y + STAT_TEXT1_Y + 30 + STAT_TEXT1_Y, STAT_TEXT1_X + DYN_TEXT1_X, STAT_TEXT1_Y,
+        hWindowMain, (HMENU)RADIO_WALLS, 0, NULL);
 
     return TRUE;
 }
@@ -47,12 +60,12 @@ int createLabels(HWND hWindowMain, RECT PlayGroundInPixels)
 {
     hStaticText1 = CreateWindowW(L"static", L"Points: ",
         WS_CHILD | WS_VISIBLE,
-        PlayGroundInPixels.right, BUTTON1_SIZE_Y, STAT_TEXT1_X, STAT_TEXT1_Y,
+        PlayGroundInPixels.right + 1, BUTTON1_SIZE_Y, STAT_TEXT1_X, STAT_TEXT1_Y,
         hWindowMain, (HMENU)STATIC_TEXT1, NULL, NULL);
 
     hDynamicText1 = CreateWindowW(L"static", L"0",
         WS_CHILD | WS_VISIBLE | WS_BORDER,
-        PlayGroundInPixels.right + STAT_TEXT1_X, BUTTON1_SIZE_Y, DYN_TEXT1_X, DYN_TEXT1_Y,
+        PlayGroundInPixels.right + STAT_TEXT1_X + 1, BUTTON1_SIZE_Y, DYN_TEXT1_X, DYN_TEXT1_Y,
         hWindowMain, (HMENU)DYNAMIC_TEXT1, NULL, NULL);
 
     return TRUE;
