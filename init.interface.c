@@ -48,10 +48,12 @@ int createButtons(HWND hWindowMain, RECT PlayGroundInPixels)
         WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
         PlayGroundInPixels.right + 4, BUTTON1_SIZE_Y + STAT_TEXT1_Y + 30, STAT_TEXT1_X + DYN_TEXT1_X, STAT_TEXT1_Y,
         hWindowMain, (HMENU)RADIO_NOWALLS, 0, NULL);
-    CreateWindowW(L"Button", L"With walls",
+    HWND radioButtonWalls = CreateWindowW(L"Button", L"With walls",
         WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
         PlayGroundInPixels.right + 4, BUTTON1_SIZE_Y + STAT_TEXT1_Y + 30 + STAT_TEXT1_Y, STAT_TEXT1_X + DYN_TEXT1_X, STAT_TEXT1_Y,
         hWindowMain, (HMENU)RADIO_WALLS, 0, NULL);
+    // set button to be checked by default
+    SendMessageW(radioButtonWalls, BM_SETCHECK, BST_CHECKED, 0);
 
     return TRUE;
 }

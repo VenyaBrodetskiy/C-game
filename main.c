@@ -7,7 +7,7 @@ WCHAR        szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR        szWindowClass[MAX_LOADSTRING];            // the main window class name
 BOOL         isGameStarted = FALSE;
 BOOL         isKeyDown = FALSE;
-BOOL         isEnabledWalls = FALSE;
+BOOL         isEnabledWalls = TRUE;
 
 // All Button handlers
 HWND hButtonStart; // init button
@@ -162,6 +162,15 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_SIZE:
         // currently no need to use, as window size is frozen
         //MoveAllButtons(hWindowMain, PlayGroundInPixels);
+        switch (wParam)
+        {
+        case SIZE_MINIMIZED:
+            KillTimer(hWindowMain, GAME_TIMER);
+            break;
+        case SIZE_RESTORED:
+            if (isGameStarted) SetTimer(hWindowMain, GAME_TIMER, DEFAULT_SPEED, NULL);
+            break;
+        }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
