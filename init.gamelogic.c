@@ -2,6 +2,7 @@
 
 extern char PlayGroundMap[200][100];
 extern Snake snake;
+extern HWND hTrackBar, hDynamicText1;
 
 int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 {
@@ -34,13 +35,15 @@ int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 	return 1;
 }
 
-int initSnake(RECT PlayGroundInBlocks)
+int initSnake(RECT PlayGroundInBlocks, HWND hWindowMain)
 {
 	// clear points
 	snake.score = 0;
+	updateScore(hDynamicText1, snake.score);
 
-	// set direction
+	// set direction and speed
 	snake.direct = RIGHT;
+	snake.speed = SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
 
 	// init snake
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
@@ -58,7 +61,7 @@ int initSnake(RECT PlayGroundInBlocks)
 	snake.head = snake.body[0];
 	snake.tail = snake.body[SNAKE_LENGHT - 1];
 
-	generateFood(PlayGroundInBlocks);
+	generateFood(PlayGroundInBlocks, hWindowMain);
 
 	return 1;
 }
@@ -83,20 +86,4 @@ RECT GetPlayGroundInPixels(RECT PlayGroundInBlocks, int pixelBlock)
 	PlayGroundInPixels.bottom = PlayGroundInBlocks.bottom * pixelBlock;
 
 	return PlayGroundInPixels;
-}
-
-int generateFood(RECT PlayGroundInBlocks)
-{
-	// need to try make it function async
-	Point food = { 0 };
-	do
-	{
-		int a = rand();
-		food.x = rand() * PlayGroundInBlocks.right / RAND_MAX;
-		food.y = rand() * PlayGroundInBlocks.bottom / RAND_MAX;
-	} while (PlayGroundMap[food.x][food.y] != EMPTY);
-
-	PlayGroundMap[food.x][food.y] = FOOD;
-
-	return 1;
 }

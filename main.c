@@ -8,11 +8,14 @@ WCHAR        szWindowClass[MAX_LOADSTRING];            // the main window class 
 BOOL         isGameStarted = FALSE;
 BOOL         isKeyDown = FALSE;
 BOOL         isEnabledWalls = TRUE;
+BOOL         isGamePaused = FALSE;
 
 // All Button handlers
 HWND hButtonStart; // init button
 HWND hStaticText1;
 HWND hDynamicText1; // init global text-window
+HWND hTrackBar;
+HWND hProgressBar;
 
 // snake
 HDC hdc;
@@ -20,6 +23,7 @@ RECT PlayGroundInPixels;
 RECT PlayGroundInBlocks;
 Snake snake;
 char PlayGroundMap[200][100];
+int counterBonus;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -45,6 +49,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
+
+    // enable use of common controls
+    INITCOMMONCONTROLSEX icex;
+    icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+    icex.dwICC = ICC_LISTVIEW_CLASSES;
+    InitCommonControlsEx(&icex);
 
     HACCEL hAccelTable = LoadAcceleratorsW(hInstance, MAKEINTRESOURCE(IDC_MYGAME));
 
@@ -128,26 +138,53 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         default:
             return DefWindowProcW(hWindowMain, message, wParam, lParam);
         }
+        SetFocus(hWindowMain);
+        break;
     }
-    break;
     case WM_TIMER:
     {
-        if (isGameStarted)
+        switch (wParam)
         {
-            isKeyDown = FALSE;
-            moveSnake(hWindowMain);
-            drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
+        case GAME_TIMER:
+            if (isGameStarted)
+            {
+                isKeyDown = FALSE;
+                moveSnake(hWindowMain);
+                drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
+            }
+            break;
+        case FOOD_TIMER:
+            if (counterBonus > 0)
+            {
+                counterBonus--;
+                SendMessageW(hProgressBar, PBM_SETPOS, (WPARAM)counterBonus, 0);
+            }
+            break;
         }
-        
     }
     case WM_KEYDOWN:
         isKeyDown = changeSnakeDirection(wParam, isKeyDown);
         break;
-
     case WM_KEYUP:
-        if (wParam == VK_RETURN && !isGameStarted) isGameStarted = startNewGame(hWindowMain);
+        if (wParam == VK_RETURN && !isGameStarted) 
+            isGameStarted = startNewGame(hWindowMain);
+        if (wParam == VK_SPACE && isGameStarted && isGamePaused)
+        {
+            SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
+            SetTimer(hWindowMain, FOOD_TIMER, snake.speed / 2.5, NULL);
+            isGamePaused = FALSE;
+        }
+        else if (wParam == VK_SPACE && isGameStarted && !isGamePaused)
+        {
+            KillTimer(hWindowMain, GAME_TIMER);
+            KillTimer(hWindowMain, FOOD_TIMER);
+            isGamePaused = TRUE;
+        }
+
         break;
-    
+    case WM_HSCROLL:
+        SetFocus(hWindowMain);
+        break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -166,9 +203,14 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         {
         case SIZE_MINIMIZED:
             KillTimer(hWindowMain, GAME_TIMER);
+            KillTimer(hWindowMain, FOOD_TIMER);
             break;
         case SIZE_RESTORED:
-            if (isGameStarted) SetTimer(hWindowMain, GAME_TIMER, DEFAULT_SPEED, NULL);
+            if (isGameStarted)
+            {
+                SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
+                SetTimer(hWindowMain, FOOD_TIMER, snake.speed / 2.5, NULL);
+            }
             break;
         }
         break;
@@ -184,9 +226,9 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
 BOOL startNewGame(HWND hWindowMain)
 {
     initPlayGround(PlayGroundInBlocks, isEnabledWalls);
-    initSnake(PlayGroundInBlocks);
-    SetTimer(hWindowMain, GAME_TIMER, DEFAULT_SPEED, NULL);
-    SetFocus(hWindowMain);
+    initSnake(PlayGroundInBlocks, hWindowMain);
+    counterBonus = 100;
+    SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
 
     return TRUE;
 }

@@ -1,4 +1,4 @@
-#include "snake.gamelogic.h"
+﻿#include "snake.gamelogic.h"
 
 extern Snake snake;
 extern char PlayGroundMap[200][100];
@@ -7,6 +7,7 @@ extern RECT PlayGroundInPixels;
 extern HDC hdc;
 extern HWND hDynamicText1;
 extern BOOL isGameStarted;
+extern int counterBonus;
 
 BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown)
 {
@@ -76,16 +77,18 @@ int moveSnake(HWND hWindowMain)
     case WALL:
     case SNAKE:
     {
-        gameOver(hWindowMain);
+        gameOver(hWindowMain, snake.score);
     }
         break;
     case FOOD:
     {
-        snake.score++;
+        snake.score = snake.score + 10 + counterBonus;
         updateScore(hDynamicText1, snake.score);
         snake.indexOfTail++;
 
-        generateFood(PlayGroundInBlocks);
+        KillTimer(hWindowMain, FOOD_TIMER);
+        counterBonus = 100;
+        generateFood(PlayGroundInBlocks, hWindowMain);
     }
     // here no need break, as further actions are same as if there is no food
     case EMPTY:
@@ -108,21 +111,49 @@ int moveSnake(HWND hWindowMain)
 
 int updateScore(HWND hDynamicText, int score)
 {
-    wchar_t buf[10];
-    UINT buf_len = 10;
+    wchar_t scoreString[15];
+    swprintf_s(scoreString, 15, L"Score: %d", score);
 
-    StringCbPrintfW(buf, buf_len, L"%d", score);
-    SetWindowTextW(hDynamicText, buf);
+    SetWindowTextW(hDynamicText, scoreString);
 
     return 1;
 }
 
-int gameOver(HWND hWindowMain)
+int gameOver(HWND hWindowMain, int score)
 {
     KillTimer(hWindowMain, GAME_TIMER);
-    drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
-    MessageBoxW(hWindowMain, L"Game is over", L"Game Over", MB_OK);
+    KillTimer(hWindowMain, FOOD_TIMER);
     isGameStarted = FALSE;
+    //drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
+
+    wchar_t message[120];
+    if (score < LOW_RESULT) 
+        swprintf_s(message, 120, L"Your score: %d \nTry to adjust settings \n\nPress Enter to try again", score);
+    else if (score < AVERAGE_RESULT) 
+        swprintf_s(message, 120, L"Your score: %d \nכל הכבוד \n\nPress Enter to try again", score);
+    else if (score < HIGH_RESULT) 
+        swprintf_s(message, 120, L"Your score: %d \nAmazing result! \n\nPress Enter to try again", score);
+    else 
+        swprintf_s(message, 120, L"Your score: %d \nThis is crazy! \n\nPress Enter to try again", score);
+    HWND messageBox = MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
+
+    return 1;
+}
+
+int generateFood(RECT PlayGroundInBlocks, HWND hWindowMain)
+{
+    // need to try make it function async
+    Point food = { 0 };
+    do
+    {
+        int a = rand();
+        food.x = rand() * PlayGroundInBlocks.right / RAND_MAX;
+        food.y = rand() * PlayGroundInBlocks.bottom / RAND_MAX;
+    } while (PlayGroundMap[food.x][food.y] != EMPTY);
+
+    PlayGroundMap[food.x][food.y] = FOOD;
+
+    SetTimer(hWindowMain, FOOD_TIMER, snake.speed/2.5, NULL);
 
     return 1;
 }
