@@ -1,8 +1,11 @@
 #pragma once
 
-#include <strsafe.h>
 #include "resource.h"
 #include "framework.h"
+#include <commctrl.h>
+#include <strsafe.h>
+#pragma comment(lib, "comctl32")
+
 
 #include "snake.gamelogic.h"
 #include "init.gamelogic.h"
@@ -26,13 +29,17 @@
 #define DYN_TEXT1_Y STAT_TEXT1_Y
 
 // game params
-#define DEFAULT_SPEED 100
 #define SNAKE_LENGHT 5
 
 // game interface params
 #define PIXEL_BLOCK 20
 #define FIELD_WIDTH 60
 #define FIELD_HEIGHT 35
+
+// game results
+#define LOW_RESULT 40
+#define AVERAGE_RESULT 200
+#define HIGH_RESULT 500
 
 // Colors
 #define COLOR_SNAKE RGB(128, 128, 255)
@@ -44,9 +51,14 @@ enum Buttons {
     BUTTON_START,
     STATIC_TEXT1,
     DYNAMIC_TEXT1,
-    GROUP_BOX,
+    GROUP_BOX1,
     RADIO_WALLS,
-    RADIO_NOWALLS
+    RADIO_NOWALLS,
+    SPEED_LABEL,
+    TRACK_BAR,
+    STATIC_TEXT2,
+    STATIC_TEXT3,
+    PROGRESS_BAR
 };
 
 enum Timers {
@@ -81,6 +93,7 @@ typedef struct Snake
     Point head;
     Point tail;
     int indexOfTail;
+    int speed;
     int score;
 } Snake, *pSnake;
 

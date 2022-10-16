@@ -3,6 +3,7 @@
 extern Snake snake;
 extern RECT PlayGroundInBlocks;
 extern char PlayGroundMap[200][100];
+extern int counterBonus;
 
 int paintGameField(HDC hdc, RECT PlayGroundInPixels)
 {
@@ -48,8 +49,13 @@ int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
                 paintSquareBlock(bufferDC, x, y, COLOR_WALL, COLOR_WALL);
                 break;
             case FOOD:
-                paintRoundBlock(bufferDC, x, y, COLOR_FOOD, COLOR_FOOD);
+            {
+                int green = 128 - counterBonus;
+                int blue = green;
+                COLORREF color_food = RGB(200, green, blue);
+                paintRoundBlock(bufferDC, x, y, color_food, color_food);
                 break;
+            }
             }
             
         }
@@ -99,7 +105,7 @@ int paintRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen)
     SelectObject(dc, hOldPen);
     SelectObject(dc, hOldBrush);
     DeleteObject(hPen);
-    DeleteObject(hBrush);
+    DeleteObject(hBrush); 
 
     return 1;
 }
