@@ -1,34 +1,48 @@
 #include "init.gamelogic.h"
 
-extern char PlayGroundMap[200][100];
+extern char **PlayGroundMap;
 extern Snake snake;
 extern HWND hTrackBar, hDynamicText1;
 
 int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 {
 	if (PlayGroundInBlocks.bottom <= 1 || PlayGroundInBlocks.right <= 1) return 0;
-	
-	// clear 
-	for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
-		for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
-			PlayGroundMap[x][y] = EMPTY;
+
+	//char **PlayGroundMap = NULL;
+	PlayGroundMap = (char**)malloc((PlayGroundInBlocks.right + 1) * sizeof(char*));
+	if (PlayGroundMap != NULL)
+	{
+		for (int i = 0; i <= PlayGroundInBlocks.right; i++)
+		{
+			PlayGroundMap[i] = (char*)malloc((PlayGroundInBlocks.bottom + 1) * sizeof(char));
+			if (PlayGroundMap[i] == NULL) return 0;
 		}
 	}
-
-	// build walls
-	if (isEnabledWalls == 1)
+	
+	// clear 
+	if (PlayGroundMap != NULL && PlayGroundMap[0] != NULL)
 	{
 		for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
-			PlayGroundMap[x][0] = WALL;
+			for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
+				PlayGroundMap[x][y] = EMPTY;
+			}
 		}
-		for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
-			PlayGroundMap[x][PlayGroundInBlocks.bottom - 1] = WALL;
-		}
-		for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
-			PlayGroundMap[0][y] = WALL;
-		}
-		for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
-			PlayGroundMap[PlayGroundInBlocks.right - 1][y] = WALL;
+		// build walls
+
+		if (isEnabledWalls == 1)
+		{
+			for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
+				PlayGroundMap[x][0] = WALL;
+			}
+			for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
+				PlayGroundMap[x][PlayGroundInBlocks.bottom - 1] = WALL;
+			}
+			for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
+				PlayGroundMap[0][y] = WALL;
+			}
+			for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
+				PlayGroundMap[PlayGroundInBlocks.right - 1][y] = WALL;
+			}
 		}
 	}
 
@@ -44,6 +58,10 @@ int initSnake(RECT PlayGroundInBlocks, HWND hWindowMain)
 	// set direction and speed
 	snake.direct = RIGHT;
 	snake.speed = SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
+
+	// allocate memory for snake depend on PlayGroundSize
+	snake.body = (Point*)malloc((PlayGroundInBlocks.right + 1) * (PlayGroundInBlocks.bottom + 1) * sizeof(Point));
+	if (snake.body == NULL) return 0;
 
 	// init snake
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;

@@ -17,8 +17,8 @@
 #define MAX_LOADSTRING 100
 
 // button start sizes
-#define BUTTON1_SIZE_X 100
-#define BUTTON1_SIZE_Y 30
+#define BUTTON_SIZE_X 100
+#define BUTTON_SIZE_Y 35
 
 // static text sizes
 #define STAT_TEXT1_X 55
@@ -49,6 +49,7 @@
 
 enum Buttons {
     BUTTON_START,
+    BUTTON_PAUSE,
     STATIC_TEXT1,
     DYNAMIC_TEXT1,
     GROUP_BOX1,
@@ -89,13 +90,13 @@ enum Field {
 typedef struct Snake
 {
     enum Direct direct;
-    Point body[1000];
+    Point *body;
     Point head;
     Point tail;
     int indexOfTail;
     int speed;
     int score;
-} Snake, *pSnake;
+} Snake;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
