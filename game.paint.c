@@ -2,7 +2,7 @@
 
 extern Snake snake;
 extern RECT PlayGroundInBlocks;
-extern char PlayGroundMap[200][100];
+extern char **PlayGroundMap;
 extern int counterBonus;
 
 int paintGameField(HDC hdc, RECT PlayGroundInPixels)

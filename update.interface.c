@@ -9,11 +9,11 @@ int MoveAllButtons(HWND hWindowMain, RECT GameField)
         0, 0, SWP_NOSIZE);
 
     SetWindowPos(hStaticText1, NULL,
-        GameField.right, BUTTON1_SIZE_Y,
+        GameField.right, BUTTON_SIZE_Y,
         0, 0, SWP_NOSIZE);
 
     SetWindowPos(hDynamicText1, NULL,
-        GameField.right + STAT_TEXT1_X, BUTTON1_SIZE_Y,
+        GameField.right + STAT_TEXT1_X, BUTTON_SIZE_Y,
         0, 0, SWP_NOSIZE);
 
     return 1;

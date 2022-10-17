@@ -1,7 +1,7 @@
 ﻿#include "snake.gamelogic.h"
 
 extern Snake snake;
-extern char PlayGroundMap[200][100];
+extern char **PlayGroundMap;
 extern RECT PlayGroundInBlocks;
 extern RECT PlayGroundInPixels;
 extern HDC hdc;

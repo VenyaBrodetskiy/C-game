@@ -11,7 +11,8 @@ BOOL         isEnabledWalls = TRUE;
 BOOL         isGamePaused = FALSE;
 
 // All Button handlers
-HWND hButtonStart; // init button
+HWND hButtonStart; 
+HWND hButtonPause;
 HWND hStaticText1;
 HWND hDynamicText1; // init global text-window
 HWND hTrackBar;
@@ -22,7 +23,7 @@ HDC hdc;
 RECT PlayGroundInPixels;
 RECT PlayGroundInBlocks;
 Snake snake;
-char PlayGroundMap[200][100];
+char **PlayGroundMap;
 int counterBonus;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -36,7 +37,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // TODO: Place code here.
 
     // Initialize global strings
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING); // get szTitle
+    //LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING); // get szTitle
     LoadStringW(hInstance, IDC_MYGAME, szWindowClass, MAX_LOADSTRING); // get szWindowClass
     MyRegisterClass(hInstance);
     
@@ -129,6 +130,22 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         case BUTTON_START:
             isGameStarted = startNewGame(hWindowMain);
             break;
+        case BUTTON_PAUSE:
+            if (isGameStarted && isGamePaused)
+            {
+                SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
+                SetTimer(hWindowMain, FOOD_TIMER, snake.speed / 2.5, NULL);
+                isGamePaused = FALSE;
+                SetWindowTextW(hButtonPause, L"Pause");
+            }
+            else if (isGameStarted && !isGamePaused)
+            {
+                KillTimer(hWindowMain, GAME_TIMER);
+                KillTimer(hWindowMain, FOOD_TIMER);
+                isGamePaused = TRUE;
+                SetWindowTextW(hButtonPause, L"Continue..");
+            }
+            break;
         case RADIO_NOWALLS:
             isEnabledWalls = FALSE;
             break;
@@ -166,19 +183,22 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         isKeyDown = changeSnakeDirection(wParam, isKeyDown);
         break;
     case WM_KEYUP:
-        if (wParam == VK_RETURN && !isGameStarted) 
-            isGameStarted = startNewGame(hWindowMain);
+        if (wParam == VK_RETURN && (!isGameStarted || isGamePaused))
+            startNewGame(hWindowMain);
+        
         if (wParam == VK_SPACE && isGameStarted && isGamePaused)
         {
             SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
             SetTimer(hWindowMain, FOOD_TIMER, snake.speed / 2.5, NULL);
             isGamePaused = FALSE;
+            SetWindowTextW(hButtonPause, L"Pause");
         }
         else if (wParam == VK_SPACE && isGameStarted && !isGamePaused)
         {
             KillTimer(hWindowMain, GAME_TIMER);
             KillTimer(hWindowMain, FOOD_TIMER);
             isGamePaused = TRUE;
+            SetWindowTextW(hButtonPause, L"Continue..");
         }
 
         break;
@@ -192,6 +212,22 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             HDC hdc = BeginPaint(hWindowMain, &ps);
 
             paintGameField(hdc, PlayGroundInPixels);
+
+            SetTextColor(hdc, COLOR_SNAKE);
+            SetBkColor(hdc, COLOR_BLACK);
+            RECT textRect = { 450, 200, 850, 400 };
+            DrawTextW(hdc, 
+                L"Welcome!\n"
+                L"\n"
+                L"This is NOKIA inspired snake!\n"
+                L"Before you start, please choose game mode and speed.\n"
+                L"\n"
+                L"Tips:\n"
+                L"- Use Arrow Keys to control snake\n"
+                L"- Press Enter to start the game\n"
+                L"- Press Space to pause\n"
+                L"- Mind the Bonus",
+                220, &textRect, DT_WORDBREAK);
 
             EndPaint(hWindowMain, &ps);
         }
@@ -216,6 +252,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
+        free(PlayGroundMap);
         break;
     default:
         return DefWindowProcW(hWindowMain, message, wParam, lParam);
@@ -230,5 +267,10 @@ BOOL startNewGame(HWND hWindowMain)
     counterBonus = 100;
     SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
 
-    return TRUE;
+    isGameStarted = TRUE;
+
+    isGamePaused = FALSE;
+    SetWindowTextW(hButtonPause, L"Pause");
+
+    return isGameStarted;
 }
