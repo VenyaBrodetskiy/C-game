@@ -1,4 +1,3 @@
-// MyGame.cpp : Defines the entry point for the application.
 #include "main.h"
 
 // Global Variables:
@@ -11,20 +10,14 @@ BOOL         isEnabledWalls = TRUE;
 BOOL         isGamePaused = FALSE;
 
 // All Button handlers
-HWND hButtonStart; 
-HWND hButtonPause;
-HWND hStaticText1;
-HWND hDynamicText1; // init global text-window
-HWND hTrackBar;
-HWND hProgressBar;
+HWND hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgressBar;
 
 // snake
 HDC hdc;
-RECT PlayGroundInPixels;
-RECT PlayGroundInBlocks;
+RECT PlayGroundInPixels, PlayGroundInBlocks;
 Snake snake;
 char **PlayGroundMap;
-int counterBonus;
+int foodBonus;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -34,15 +27,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: Place code here.
-
     // Initialize global strings
     //LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING); // get szTitle
     LoadStringW(hInstance, IDC_MYGAME, szWindowClass, MAX_LOADSTRING); // get szWindowClass
     MyRegisterClass(hInstance);
     
     // init Playground for Snake 
-    PlayGroundInBlocks = CreatePlayGround(FIELD_WIDTH, FIELD_HEIGHT);
+    PlayGroundInBlocks = GetPlayGroundInBlocks(FIELD_WIDTH, FIELD_HEIGHT);
     PlayGroundInPixels = GetPlayGroundInPixels(PlayGroundInBlocks, PIXEL_BLOCK);
 
     // Perform application initialization:
@@ -116,7 +107,6 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_CREATE:
         {
             createButtons(hWindowMain, PlayGroundInPixels);
-            createLabels(hWindowMain, PlayGroundInPixels);
 
             hdc = GetDC(hWindowMain);
             break;
@@ -124,7 +114,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
-        // Parse the menu selections:
+
         switch (wmId)
         {
         case BUTTON_START:
@@ -133,17 +123,11 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         case BUTTON_PAUSE:
             if (isGameStarted && isGamePaused)
             {
-                SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
-                SetTimer(hWindowMain, FOOD_TIMER, snake.speed / 2.5, NULL);
-                isGamePaused = FALSE;
-                SetWindowTextW(hButtonPause, L"Pause");
+                isGamePaused = resumeGame(hWindowMain);;
             }
             else if (isGameStarted && !isGamePaused)
             {
-                KillTimer(hWindowMain, GAME_TIMER);
-                KillTimer(hWindowMain, FOOD_TIMER);
-                isGamePaused = TRUE;
-                SetWindowTextW(hButtonPause, L"Continue..");
+                isGamePaused = pauseGame(hWindowMain);
             }
             break;
         case RADIO_NOWALLS:
@@ -171,10 +155,10 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             }
             break;
         case FOOD_TIMER:
-            if (counterBonus > 0)
+            if (foodBonus > 0)
             {
-                counterBonus--;
-                SendMessageW(hProgressBar, PBM_SETPOS, (WPARAM)counterBonus, 0);
+                foodBonus--;
+                SendMessageW(hProgressBar, PBM_SETPOS, (WPARAM)foodBonus, 0);
             }
             break;
         }
@@ -188,22 +172,20 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         
         if (wParam == VK_SPACE && isGameStarted && isGamePaused)
         {
-            SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
-            SetTimer(hWindowMain, FOOD_TIMER, snake.speed / 2.5, NULL);
-            isGamePaused = FALSE;
-            SetWindowTextW(hButtonPause, L"Pause");
+            isGamePaused = resumeGame(hWindowMain);
         }
         else if (wParam == VK_SPACE && isGameStarted && !isGamePaused)
         {
-            KillTimer(hWindowMain, GAME_TIMER);
-            KillTimer(hWindowMain, FOOD_TIMER);
-            isGamePaused = TRUE;
-            SetWindowTextW(hButtonPause, L"Continue..");
+            isGamePaused = pauseGame(hWindowMain);
         }
 
         break;
     case WM_HSCROLL:
         SetFocus(hWindowMain);
+
+        // if would like to change speed while game is running (I thing this is like cheating)
+        //snake.speed = (int)SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
+        //SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
         break;
     case WM_PAINT:
         {
@@ -211,8 +193,16 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             // hdc is handle to device context
             HDC hdc = BeginPaint(hWindowMain, &ps);
 
-            drawGameField(hdc, PlayGroundInPixels);
-            drawGameTips(hdc, PlayGroundInPixels);
+            if (!isGameStarted)
+            {
+                drawGameField(hdc, PlayGroundInPixels);
+                drawGameTips(hdc, PlayGroundInPixels);
+            }
+            else
+            {
+                drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
+            }
+
             
             EndPaint(hWindowMain, &ps);
         }
@@ -223,14 +213,12 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         switch (wParam)
         {
         case SIZE_MINIMIZED:
-            KillTimer(hWindowMain, GAME_TIMER);
-            KillTimer(hWindowMain, FOOD_TIMER);
+            isGamePaused = pauseGame(hWindowMain);
             break;
         case SIZE_RESTORED:
-            if (isGameStarted)
+            if (isGameStarted && !isGamePaused)
             {
-                SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
-                SetTimer(hWindowMain, FOOD_TIMER, snake.speed / 2.5, NULL);
+                isGamePaused = resumeGame(hWindowMain);
             }
             break;
         }
@@ -249,13 +237,36 @@ BOOL startNewGame(HWND hWindowMain)
 {
     initPlayGround(PlayGroundInBlocks, isEnabledWalls);
     initSnake(PlayGroundInBlocks, hWindowMain);
-    counterBonus = 100;
+    
+    generateFood(PlayGroundInBlocks, hWindowMain); // inside this func food_timer is set
+
     SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
-
     isGameStarted = TRUE;
-
     isGamePaused = FALSE;
+
     SetWindowTextW(hButtonPause, L"Pause");
 
     return isGameStarted;
+}
+
+BOOL pauseGame(HWND hWindowMain)
+{
+    KillTimer(hWindowMain, GAME_TIMER);
+    KillTimer(hWindowMain, FOOD_TIMER);
+
+    SetWindowTextW(hButtonPause, L"Continue..");
+    BOOL isGamePaused = TRUE;
+
+    return isGamePaused;
+}
+
+BOOL resumeGame(HWND hWindowMain)
+{
+    SetTimer(hWindowMain, GAME_TIMER, snake.speed, NULL);
+    SetTimer(hWindowMain, FOOD_TIMER, snake.bonusSpeed, NULL);
+    
+    SetWindowTextW(hButtonPause, L"Pause");
+    BOOL isGamePaused = FALSE;
+
+    return isGamePaused;
 }

@@ -1,13 +1,11 @@
-﻿#include "snake.gamelogic.h"
+﻿#include "snake.game.h"
 
 extern Snake snake;
 extern char **PlayGroundMap;
-extern RECT PlayGroundInBlocks;
-extern RECT PlayGroundInPixels;
-extern HDC hdc;
-extern HWND hDynamicText1;
+extern RECT PlayGroundInBlocks, PlayGroundInPixels;
+extern HWND hDynamicText;
 extern BOOL isGameStarted;
-extern int counterBonus;
+extern int foodBonus;
 
 BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown)
 {
@@ -82,39 +80,29 @@ int moveSnake(HWND hWindowMain)
         break;
     case FOOD:
     {
-        snake.score = snake.score + 10 + counterBonus;
-        updateScore(hDynamicText1, snake.score);
         snake.indexOfTail++;
 
+        snake.score = snake.score + SCORE_INCREMENT + foodBonus;
+        updateScore(hDynamicText, snake.score);
+
         KillTimer(hWindowMain, FOOD_TIMER);
-        counterBonus = 100;
         generateFood(PlayGroundInBlocks, hWindowMain);
     }
     // here no need break, as further actions are same as if there is no food
     case EMPTY:
     {
-        PlayGroundMap[snake.tail.x][snake.tail.y] = EMPTY;
+        PlayGroundMap[snake.tail.x][snake.tail.y] = EMPTY; // snake growth on next move after eating food 
+        PlayGroundMap[snake.head.x][snake.head.y] = SNAKE;
+
         for (int index = snake.indexOfTail; index > 0; index--)
         {
             snake.body[index] = snake.body[index - 1];
         }
         snake.body[0] = snake.head;
         snake.tail = snake.body[snake.indexOfTail];
-        PlayGroundMap[snake.head.x][snake.head.y] = SNAKE;
     }
         break;
     }
-
-    return 1;
-}
-
-
-int updateScore(HWND hDynamicText, int score)
-{
-    wchar_t scoreString[15];
-    swprintf_s(scoreString, 15, L"Score: %d", score);
-
-    SetWindowTextW(hDynamicText, scoreString);
 
     return 1;
 }
@@ -124,7 +112,6 @@ int gameOver(HWND hWindowMain, int score)
     KillTimer(hWindowMain, GAME_TIMER);
     KillTimer(hWindowMain, FOOD_TIMER);
     isGameStarted = FALSE;
-    //drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
 
     wchar_t message[120];
     if (score < LOW_RESULT) 
@@ -146,14 +133,14 @@ int generateFood(RECT PlayGroundInBlocks, HWND hWindowMain)
     Point food = { 0 };
     do
     {
-        int a = rand();
         food.x = rand() * PlayGroundInBlocks.right / RAND_MAX;
         food.y = rand() * PlayGroundInBlocks.bottom / RAND_MAX;
     } while (PlayGroundMap[food.x][food.y] != EMPTY);
 
     PlayGroundMap[food.x][food.y] = FOOD;
-
-    SetTimer(hWindowMain, FOOD_TIMER, snake.speed/2.5, NULL);
+    
+    foodBonus = MAX_BONUS;
+    SetTimer(hWindowMain, FOOD_TIMER, snake.bonusSpeed, NULL);
 
     return 1;
 }

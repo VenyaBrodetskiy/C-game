@@ -132,21 +132,21 @@
     <ClInclude Include="game.paint.h" />
     <ClInclude Include="init.interface.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="params.interface.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="snake.gamelogic.h" />
+    <ClInclude Include="snake.game.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="params.game.h" />
     <ClInclude Include="update.interface.h" />
-    <ClInclude Include="init.gamelogic.h" />
+    <ClInclude Include="init.game.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.paint.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="init.interface.c" />
-    <ClCompile Include="movement.c" />
-    <ClCompile Include="snake.gamelogic.c" />
-    <ClCompile Include="unref_usefull staff.c" />
+    <ClCompile Include="snake.game.c" />
     <ClCompile Include="update.interface.c" />
-    <ClCompile Include="init.gamelogic.c" />
+    <ClCompile Include="init.game.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyGame.rc" />

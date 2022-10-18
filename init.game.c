@@ -1,14 +1,15 @@
-#include "init.gamelogic.h"
+#include "init.game.h"
+#include <math.h>
 
 extern char **PlayGroundMap;
 extern Snake snake;
-extern HWND hTrackBar, hDynamicText1;
+extern HWND hTrackBar, hDynamicText;
 
 int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 {
 	if (PlayGroundInBlocks.bottom <= 1 || PlayGroundInBlocks.right <= 1) return 0;
 
-	//char **PlayGroundMap = NULL;
+	free(PlayGroundMap);
 	PlayGroundMap = (char**)malloc((PlayGroundInBlocks.right + 1) * sizeof(char*));
 	if (PlayGroundMap != NULL)
 	{
@@ -19,8 +20,8 @@ int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 		}
 	}
 	
-	// clear 
-	if (PlayGroundMap != NULL && PlayGroundMap[0] != NULL)
+	// clear PlayGround
+	if (PlayGroundMap != NULL && PlayGroundMap[0] != NULL) // check if memory was allocated
 	{
 		for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
 			for (int y = 0; y <= PlayGroundInBlocks.bottom; y++) {
@@ -28,7 +29,6 @@ int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 			}
 		}
 		// build walls
-
 		if (isEnabledWalls == 1)
 		{
 			for (int x = 0; x <= PlayGroundInBlocks.right; x++) {
@@ -53,42 +53,41 @@ int initSnake(RECT PlayGroundInBlocks, HWND hWindowMain)
 {
 	// clear points
 	snake.score = 0;
-	updateScore(hDynamicText1, snake.score);
+	updateScore(hDynamicText, snake.score);
 
 	// set direction and speed
 	snake.direct = RIGHT;
-	snake.speed = SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
-
-	// allocate memory for snake depend on PlayGroundSize
-	snake.body = (Point*)malloc((PlayGroundInBlocks.right + 1) * (PlayGroundInBlocks.bottom + 1) * sizeof(Point));
-	if (snake.body == NULL) return 0;
+	snake.speed = (int)SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
+	snake.bonusSpeed = (int)round(snake.speed / BONUS_COEFF) + SPEED_MAX;
 
 	// init snake
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
 	int center_y = (PlayGroundInBlocks.bottom - PlayGroundInBlocks.top) / 2;
+	
 	for (int index = 0; index < SNAKE_LENGHT; index++)
 	{
-		snake.body[index].x = center_x - index;
-		snake.body[index].y = center_y;
-		PlayGroundMap[snake.body[index].x][snake.body[index].y] = SNAKE;
+		if (index < sizeof(snake.body))
+		{
+			snake.body[index].x = center_x - index;
+			snake.body[index].y = center_y;
+			PlayGroundMap[snake.body[index].x][snake.body[index].y] = SNAKE;
+		}
+		
 	}
-
 	// find head and tail
 	snake.indexOfTail = SNAKE_LENGHT - 1;
 
 	snake.head = snake.body[0];
-	snake.tail = snake.body[SNAKE_LENGHT - 1];
-
-	generateFood(PlayGroundInBlocks, hWindowMain);
+	snake.tail = snake.body[snake.indexOfTail];
 
 	return 1;
 }
 
-RECT CreatePlayGround(int widthBlock, int heightBlock)
+RECT GetPlayGroundInBlocks(int widthBlock, int heightBlock)
 {
-	RECT PlayGroundInBlocks;
-	PlayGroundInBlocks.left = 1;
-	PlayGroundInBlocks.top = 1;
+	RECT PlayGroundInBlocks = { 0 };
+	PlayGroundInBlocks.left = 0; // if some bug happens, change to 1
+	PlayGroundInBlocks.top = 0; // if some bug happens, change to 1
 	PlayGroundInBlocks.bottom = heightBlock;
 	PlayGroundInBlocks.right = widthBlock;
 
@@ -97,7 +96,7 @@ RECT CreatePlayGround(int widthBlock, int heightBlock)
 
 RECT GetPlayGroundInPixels(RECT PlayGroundInBlocks, int pixelBlock)
 {
-	RECT PlayGroundInPixels;
+	RECT PlayGroundInPixels = { 0 };
 	PlayGroundInPixels.left = 0;
 	PlayGroundInPixels.top = 0;
 	PlayGroundInPixels.right = PlayGroundInBlocks.right * pixelBlock;
