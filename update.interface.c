@@ -1,19 +1,29 @@
 #include "update.interface.h"
-// currently this module is not used, because screen
-extern HWND hButtonStart, hStaticText1, hDynamicText1;
+extern HWND hButtonStart, hStaticText, hDynamicText;
 
+int updateScore(HWND hDynamicText, int score)
+{
+    wchar_t scoreString[15];
+    swprintf_s(scoreString, 15, L"Score: %d", score);
+
+    SetWindowTextW(hDynamicText, scoreString);
+
+    return 1;
+}
+
+// currently this function is not used, because screen size is fixed
 int MoveAllButtons(HWND hWindowMain, RECT GameField)
 {
     SetWindowPos(hButtonStart, NULL,
         GameField.right, 0,
         0, 0, SWP_NOSIZE);
 
-    SetWindowPos(hStaticText1, NULL,
-        GameField.right, BUTTON_SIZE_Y,
+    SetWindowPos(hStaticText, NULL,
+        GameField.right, BUTTON_HEIGHT,
         0, 0, SWP_NOSIZE);
 
-    SetWindowPos(hDynamicText1, NULL,
-        GameField.right + STAT_TEXT1_X, BUTTON_SIZE_Y,
+    SetWindowPos(hDynamicText, NULL,
+        GameField.right + STAT_TEXT_X, BUTTON_HEIGHT,
         0, 0, SWP_NOSIZE);
 
     return 1;

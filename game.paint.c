@@ -3,7 +3,7 @@
 extern Snake snake;
 extern RECT PlayGroundInBlocks;
 extern char **PlayGroundMap;
-extern int counterBonus;
+extern int foodBonus;
 
 int drawGameTips(HDC hdc, RECT PlayGroundInPixels)
 {
@@ -14,10 +14,10 @@ int drawGameTips(HDC hdc, RECT PlayGroundInPixels)
 
     RECT textRect =
     {
-        (PlayGroundInPixels.right - TIPS_WIDTH) / 2,
-        (PlayGroundInPixels.bottom - TIPS_HEIGHT) / 2,
-        (PlayGroundInPixels.right + TIPS_WIDTH) / 2,
-        (PlayGroundInPixels.bottom + TIPS_HEIGHT) / 2
+        (PlayGroundInPixels.right - BIG_TIPS_WIDTH) / 2,
+        (PlayGroundInPixels.bottom - BIG_TIPS_HEIGHT) / 2,
+        (PlayGroundInPixels.right + BIG_TIPS_WIDTH) / 2,
+        (PlayGroundInPixels.bottom + BIG_TIPS_HEIGHT) / 2
     };
 
     DrawTextW(hdc,
@@ -83,7 +83,7 @@ int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
                 break;
             case FOOD:
             {
-                int green = 128 - counterBonus;
+                int green = 128 - foodBonus;
                 int blue = green;
                 COLORREF color_food = RGB(200, green, blue);
                 drawRoundBlock(bufferDC, x, y, color_food, color_food);

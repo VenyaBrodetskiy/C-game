@@ -2,7 +2,14 @@
 
 extern WCHAR szTitle[MAX_LOADSTRING], szWindowClass[MAX_LOADSTRING];
 extern HINSTANCE    hInst;
-extern HWND hButtonStart, hButtonPause, hStaticText1, hDynamicText1, hTrackBar, hProgressBar;
+extern HWND hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgressBar;
+
+int initGameButtons(HWND hWindowMain, RECT PlayGroundInPixels);
+int initRadioButtons(HWND hWindowMain, RECT PlayGroundInPixels);
+int initTrackBar(HWND hWindowMain, RECT PlayGroundInPixels);
+int initTips(HWND hWindowMain, RECT PlayGroundInPixels);
+int initBonusBarAndScore(HWND hWindowMain, RECT PlayGroundInPixels);
+
 
 //
 //   FUNCTION: InitInstance(HINSTANCE, int)
@@ -19,7 +26,7 @@ BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT PlayGroundInPixels)
     hInst = hInstance; // Store instance handle in our global variable
 
     HWND hWindowMain = CreateWindowW(szWindowClass, L"Snake Game", WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
-        0, 0, PlayGroundInPixels.right + BUTTON_SIZE_X + 20, PlayGroundInPixels.bottom + 39, NULL, NULL, hInstance, NULL);
+        0, 0, PlayGroundInPixels.right + BUTTON_WIDTH + 20, PlayGroundInPixels.bottom + 39, NULL, NULL, hInstance, NULL);
     // 17 and 40 are just numbers to make it more beautiful. later change to expressions
 
     if (!hWindowMain)
@@ -35,87 +42,108 @@ BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT PlayGroundInPixels)
 
 int createButtons(HWND hWindowMain, RECT PlayGroundInPixels)
 {
-    // New game button
-    hButtonStart = CreateWindowW(L"Button", L"New game",
-        WS_VISIBLE | WS_CHILD,
-        PlayGroundInPixels.right + 1, 0, BUTTON_SIZE_X, BUTTON_SIZE_Y,
-        hWindowMain, (HMENU)BUTTON_START, 0, NULL);
-    hButtonPause = CreateWindowW(L"Button", L"Pause",
-        WS_CHILD | WS_VISIBLE,
-        PlayGroundInPixels.right + 1, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y,
-        hWindowMain, (HMENU)BUTTON_PAUSE, NULL, NULL);
+    initGameButtons(hWindowMain, PlayGroundInPixels);
 
-    // Radiobuttons controlling Wall/NoWall game modes
-    CreateWindowW(L"Button", L"Game mode",
-        WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-        PlayGroundInPixels.right + 1, BUTTON_SIZE_Y + STAT_TEXT1_Y + 10, STAT_TEXT1_X + DYN_TEXT1_X, 80,
-        hWindowMain, (HMENU)GROUP_BOX1, 0, NULL);
-    CreateWindowW(L"Button", L"No walls",
-        WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-        PlayGroundInPixels.right + 4, BUTTON_SIZE_Y + STAT_TEXT1_Y + 30, STAT_TEXT1_X + DYN_TEXT1_X - 5, STAT_TEXT1_Y,
-        hWindowMain, (HMENU)RADIO_NOWALLS, 0, NULL);
-    HWND hRadioButtonWalls = CreateWindowW(L"Button", L"With walls",
-        WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-        PlayGroundInPixels.right + 4, BUTTON_SIZE_Y + STAT_TEXT1_Y + 30 + STAT_TEXT1_Y, STAT_TEXT1_X + DYN_TEXT1_X - 5, STAT_TEXT1_Y,
-        hWindowMain, (HMENU)RADIO_WALLS, 0, NULL);
-    // set button to be checked by default
-    SendMessageW(hRadioButtonWalls, BM_SETCHECK, BST_CHECKED, 0);
+    initRadioButtons(hWindowMain, PlayGroundInPixels);
 
-    // Trackbar controlling speed
-    CreateWindowW(L"Button", L"Snake Speed",
-        WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-        PlayGroundInPixels.right + 1, BUTTON_SIZE_Y + STAT_TEXT1_Y + 30 + STAT_TEXT1_Y + STAT_TEXT1_Y + 10, STAT_TEXT1_X + DYN_TEXT1_X, 80,
-        hWindowMain, (HMENU)SPEED_LABEL, 0, NULL);
-    hTrackBar = CreateWindowW(TRACKBAR_CLASSW, L"Trackbar Control",
-        WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
-        PlayGroundInPixels.right + 1, BUTTON_SIZE_Y + STAT_TEXT1_Y + 30 + STAT_TEXT1_Y + STAT_TEXT1_Y + 30, STAT_TEXT1_X + DYN_TEXT1_X, 30, 
-        hWindowMain, (HMENU)TRACK_BAR, 0, NULL);
-    CreateWindowW(L"Static", L"Fast",
-        WS_CHILD | WS_VISIBLE, 
-        PlayGroundInPixels.right + 1, BUTTON_SIZE_Y + STAT_TEXT1_Y + 30 + STAT_TEXT1_Y + STAT_TEXT1_Y + 30 + 30, 35, 20,
-        hWindowMain, (HMENU)STATIC_TEXT2, NULL, NULL);
-    CreateWindowW(L"Static", L"Slow",
-        WS_CHILD | WS_VISIBLE, 
-        PlayGroundInPixels.right + 70, BUTTON_SIZE_Y + STAT_TEXT1_Y + 30 + STAT_TEXT1_Y + STAT_TEXT1_Y + 30 + 30, 35, 20,
-        hWindowMain, (HMENU)STATIC_TEXT3, NULL, NULL);
-    SendMessageW(hTrackBar, TBM_SETRANGE,
-        (WPARAM)TRUE,
-        (LPARAM)MAKELONG(20, 180)); // min and max positions
-    SendMessageW(hTrackBar, TBM_SETTICFREQ, 80, 0); // set frequency of ticks. Here we need just 3 ticks
-    SendMessageW(hTrackBar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)100); // set default value
+    initTrackBar(hWindowMain, PlayGroundInPixels);
 
-    // ProgressBar with bonus for food
-    hProgressBar = CreateWindowW(PROGRESS_CLASSW, L"Trackbar Control",
-        WS_CHILD | WS_VISIBLE | PBS_SMOOTH,
-        PlayGroundInPixels.right + 1, PlayGroundInPixels.bottom - 50, STAT_TEXT1_X + DYN_TEXT1_X, 20,
-        hWindowMain, (HMENU)PROGRESS_BAR, NULL, NULL);
-    SendMessageW(hProgressBar, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
-    CreateWindowW(L"static", L"Bonus:",
-        WS_CHILD | WS_VISIBLE ,
-        PlayGroundInPixels.right + 1, PlayGroundInPixels.bottom - 45 - DYN_TEXT1_Y, 80, 20,
-        hWindowMain, (HMENU)STATIC_TEXT1, NULL, NULL);
+    initTips(hWindowMain, PlayGroundInPixels);
 
-    // Tips
-    hStaticText1 = CreateWindowW(L"static",
-        L"Tips:\nMove - Arrows\nPause - Space\nNew - Enter",
-        WS_CHILD | WS_VISIBLE,
-        PlayGroundInPixels.right + 1, BUTTON_SIZE_Y + 250, STAT_TEXT1_X + DYN_TEXT1_X, 100,
-        hWindowMain, (HMENU)STATIC_TEXT1, NULL, NULL);
-
-    // Total score
-    hDynamicText1 = CreateWindowW(L"static", L"Score: ",
-        WS_CHILD | WS_VISIBLE | WS_BORDER,
-        PlayGroundInPixels.right + 1, PlayGroundInPixels.bottom - 27, STAT_TEXT1_X + DYN_TEXT1_X, DYN_TEXT1_Y,
-        hWindowMain, (HMENU)DYNAMIC_TEXT1, NULL, NULL);
+    initBonusBarAndScore(hWindowMain, PlayGroundInPixels);   
 
     return TRUE;
 }
 
-int createLabels(HWND hWindowMain, RECT PlayGroundInPixels)
+int initGameButtons(HWND hWindowMain, RECT PlayGroundInPixels)
 {
+    hButtonStart = CreateWindowW(L"Button", L"New game",
+        WS_VISIBLE | WS_CHILD,
+        PlayGroundInPixels.right + SPACE_PIXEL, 0, BUTTON_WIDTH, BUTTON_HEIGHT,
+        hWindowMain, (HMENU)BUTTON_START, 0, NULL);
+    hButtonPause = CreateWindowW(L"Button", L"Pause",
+        WS_CHILD | WS_VISIBLE,
+        PlayGroundInPixels.right + SPACE_PIXEL, BUTTON_HEIGHT, BUTTON_WIDTH, BUTTON_HEIGHT,
+        hWindowMain, (HMENU)BUTTON_PAUSE, NULL, NULL);
 
+    return 1;
+}
+
+int initRadioButtons(HWND hWindowMain, RECT PlayGroundInPixels)
+{
+    CreateWindowW(L"Button", L"Game mode",
+        WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+        PlayGroundInPixels.right + SPACE_PIXEL, 2 * BUTTON_HEIGHT, BUTTON_WIDTH, GROUP_BOX_HEIGHT,
+        hWindowMain, (HMENU)GROUP_BOX1, 0, NULL);
+    CreateWindowW(L"Button", L"No walls",
+        WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+        PlayGroundInPixels.right + 2 * SPACE_PIXEL, 2 * BUTTON_HEIGHT + 20, RADIO_BTN_WIDTH, RADIO_BTN_HEIGHT,
+        hWindowMain, (HMENU)RADIO_NOWALLS, 0, NULL);
+    HWND hRadioButtonWalls = CreateWindowW(L"Button", L"With walls",
+        WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+        PlayGroundInPixels.right + 2 * SPACE_PIXEL, 2 * BUTTON_HEIGHT + 20 + RADIO_BTN_HEIGHT, RADIO_BTN_WIDTH, RADIO_BTN_HEIGHT,
+        hWindowMain, (HMENU)RADIO_WALLS, 0, NULL);
+    // set button to be checked by default
+    SendMessageW(hRadioButtonWalls, BM_SETCHECK, BST_CHECKED, 0);
+
+    return 1;
+}
+
+int initTrackBar(HWND hWindowMain, RECT PlayGroundInPixels)
+{
+    CreateWindowW(L"Button", L"Snake Speed",
+        WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+        PlayGroundInPixels.right + SPACE_PIXEL, TRACKBAR_Y, BUTTON_WIDTH, GROUP_BOX_HEIGHT,
+        hWindowMain, (HMENU)SPEED_LABEL, 0, NULL);
+    hTrackBar = CreateWindowW(TRACKBAR_CLASSW, L"Trackbar Control",
+        WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
+        PlayGroundInPixels.right + SPACE_PIXEL, TRACKBAR_Y + TB_LABEL_H, BUTTON_WIDTH, TRACKBAR_HEIGHT,
+        hWindowMain, (HMENU)TRACK_BAR, 0, NULL);
+    CreateWindowW(L"Static", L"Fast",
+        WS_CHILD | WS_VISIBLE,
+        PlayGroundInPixels.right + SPACE_PIXEL, TRACKBAR_Y + TB_LABEL_H + TRACKBAR_HEIGHT, TB_LABEL_W, TB_LABEL_H,
+        hWindowMain, (HMENU)STATIC_TEXT2, NULL, NULL);
+    CreateWindowW(L"Static", L"Slow",
+        WS_CHILD | WS_VISIBLE,
+        PlayGroundInPixels.right + TB_RIGHT_LABEL_POS, TRACKBAR_Y + TB_LABEL_H + TRACKBAR_HEIGHT, TB_LABEL_W, TB_LABEL_H,
+        hWindowMain, (HMENU)STATIC_TEXT3, NULL, NULL);
     
+    SendMessageW(hTrackBar, TBM_SETRANGE,
+        (WPARAM)TRUE,
+        (LPARAM)MAKELONG(SPEED_MAX, SPEED_MIN)); // min and max positions
+    SendMessageW(hTrackBar, TBM_SETTICFREQ, TB_TIC_FREQ, 0); // set frequency of ticks. Here we need just 3 ticks
+    SendMessageW(hTrackBar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)TB_DEFAULT_VALUE); // set default value
 
+    return 1;
+}
 
-    return TRUE;
+int initTips(HWND hWindowMain, RECT PlayGroundInPixels)
+{
+    CreateWindowW(L"static",
+        L"Tips:\nMove - Arrows\nPause - Space\nNew - Enter",
+        WS_CHILD | WS_VISIBLE,
+        PlayGroundInPixels.right + SPACE_PIXEL, TIPS_Y, TIPS_WIDTH, TIPS_HEIGHT,
+        hWindowMain, (HMENU)STATIC_TEXT1, NULL, NULL);
+
+    return 1;
+}
+
+int initBonusBarAndScore(HWND hWindowMain, RECT PlayGroundInPixels)
+{
+    hProgressBar = CreateWindowW(PROGRESS_CLASSW, L"Trackbar Control",
+        WS_CHILD | WS_VISIBLE | PBS_SMOOTH,
+        PlayGroundInPixels.right + SPACE_PIXEL, PlayGroundInPixels.bottom - 2 * DYN_TEXT_Y, BUTTON_WIDTH, PB_LABEL_H,
+        hWindowMain, (HMENU)PROGRESS_BAR, NULL, NULL);
+    SendMessageW(hProgressBar, PBM_SETRANGE, 0, MAKELPARAM(0, MAX_BONUS));
+    CreateWindowW(L"static", L"Bonus:",
+        WS_CHILD | WS_VISIBLE,
+        PlayGroundInPixels.right + SPACE_PIXEL, PlayGroundInPixels.bottom - 2 * DYN_TEXT_Y - PB_LABEL_H, STAT_TEXT_X, PB_LABEL_H,
+        hWindowMain, (HMENU)STATIC_TEXT1, NULL, NULL);
+
+    hDynamicText = CreateWindowW(L"static", L"Score: ",
+        WS_CHILD | WS_VISIBLE | WS_BORDER,
+        PlayGroundInPixels.right + SPACE_PIXEL, PlayGroundInPixels.bottom - DYN_TEXT_Y - SPACE_PIXEL, BUTTON_WIDTH, DYN_TEXT_Y,
+        hWindowMain, (HMENU)DYNAMIC_TEXT1, NULL, NULL);
+
+    return 1;
 }
