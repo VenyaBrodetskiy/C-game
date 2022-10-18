@@ -211,24 +211,9 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             // hdc is handle to device context
             HDC hdc = BeginPaint(hWindowMain, &ps);
 
-            paintGameField(hdc, PlayGroundInPixels);
-
-            SetTextColor(hdc, COLOR_SNAKE);
-            SetBkColor(hdc, COLOR_BLACK);
-            RECT textRect = { 450, 200, 850, 400 };
-            DrawTextW(hdc, 
-                L"Welcome!\n"
-                L"\n"
-                L"This is NOKIA inspired snake!\n"
-                L"Before you start, please choose game mode and speed.\n"
-                L"\n"
-                L"Tips:\n"
-                L"- Use Arrow Keys to control snake\n"
-                L"- Press Enter to start the game\n"
-                L"- Press Space to pause\n"
-                L"- Mind the Bonus",
-                220, &textRect, DT_WORDBREAK);
-
+            drawGameField(hdc, PlayGroundInPixels);
+            drawGameTips(hdc, PlayGroundInPixels);
+            
             EndPaint(hWindowMain, &ps);
         }
         break;

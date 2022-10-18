@@ -3,7 +3,8 @@
 #include "framework.h"
 #include "main.h"
 
-int paintGameField(HDC hdc, RECT GameField);
+int drawGameTips(HDC hdc, RECT PlayGroundInPixels);
+int drawGameField(HDC hdc, RECT GameField);
 int drawPlayGround(HWND hWindowMain, HDC hdc, RECT GameField);
-int paintSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);
-int paintRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);
+int drawSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);
+int drawRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);

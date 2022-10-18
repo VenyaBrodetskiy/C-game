@@ -5,7 +5,40 @@ extern RECT PlayGroundInBlocks;
 extern char **PlayGroundMap;
 extern int counterBonus;
 
-int paintGameField(HDC hdc, RECT PlayGroundInPixels)
+int drawGameTips(HDC hdc, RECT PlayGroundInPixels)
+{
+    HWND hFont1 = CreateFontW(20, 0, 0, 0, FW_SEMIBOLD, 0, 0, 0, 0, 0, 0, 0, 0, L"Consolas");
+    HWND hOldFont = SelectObject(hdc, hFont1);
+    SetTextColor(hdc, COLOR_SNAKE);
+    SetBkColor(hdc, COLOR_BLACK);
+
+    RECT textRect =
+    {
+        (PlayGroundInPixels.right - TIPS_WIDTH) / 2,
+        (PlayGroundInPixels.bottom - TIPS_HEIGHT) / 2,
+        (PlayGroundInPixels.right + TIPS_WIDTH) / 2,
+        (PlayGroundInPixels.bottom + TIPS_HEIGHT) / 2
+    };
+
+    DrawTextW(hdc,
+        L"Welcome!\n"
+        L"\n"
+        L"This is NOKIA inspired snake!\n\n"
+        L"Before you start, please choose game mode and speed.\n"
+        L"\n"
+        L"Tips:\n"
+        L"- Use Arrow Keys to control snake\n"
+        L"- Press Enter to start the game\n"
+        L"- Press Space to pause\n"
+        L"- Mind the Bonus",
+        206, &textRect, DT_WORDBREAK);
+    SelectObject(hdc, hOldFont);
+    DeleteObject(hFont1);
+
+    return 1;
+}
+
+int drawGameField(HDC hdc, RECT PlayGroundInPixels)
 {
     HBRUSH hBrush = CreateSolidBrush(COLOR_BLACK);
     HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
@@ -33,7 +66,7 @@ int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
     SelectObject(bufferDC, bufferBitMap);
 
     // from here we paint in buffer
-    paintGameField(bufferDC, PlayGroundInPixels);
+    drawGameField(bufferDC, PlayGroundInPixels);
 
     for (int x = 0; x <= PlayGroundInBlocks.right; x++) 
     {
@@ -42,18 +75,18 @@ int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
             switch (PlayGroundMap[x][y])
             {
             case SNAKE:
-                if (snake.head.x == x && snake.head.y == y) paintSquareBlock(bufferDC, x, y, COLOR_SNAKE, COLOR_SNAKE);
-                else paintSquareBlock(bufferDC, x, y, COLOR_SNAKE, RGB(0, 0, 100));
+                if (snake.head.x == x && snake.head.y == y) drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, COLOR_SNAKE);
+                else drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, RGB(0, 0, 100));
                 break;
             case WALL:
-                paintSquareBlock(bufferDC, x, y, COLOR_WALL, COLOR_WALL);
+                drawSquareBlock(bufferDC, x, y, COLOR_WALL, COLOR_WALL);
                 break;
             case FOOD:
             {
                 int green = 128 - counterBonus;
                 int blue = green;
                 COLORREF color_food = RGB(200, green, blue);
-                paintRoundBlock(bufferDC, x, y, color_food, color_food);
+                drawRoundBlock(bufferDC, x, y, color_food, color_food);
                 break;
             }
             }
@@ -72,7 +105,7 @@ int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
     return 1;
 }
 
-int paintSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen) 
+int drawSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen) 
 {
     HBRUSH hBrush = CreateSolidBrush(brush);
     HBRUSH hOldBrush = (HBRUSH)SelectObject(dc, hBrush);
@@ -91,7 +124,7 @@ int paintSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen)
     return 1;
 }
 
-int paintRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen)
+int drawRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen)
 {
     HBRUSH hBrush = CreateSolidBrush(brush);
     HBRUSH hOldBrush = (HBRUSH)SelectObject(dc, hBrush);

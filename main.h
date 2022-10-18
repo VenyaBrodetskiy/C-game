@@ -28,6 +28,10 @@
 #define DYN_TEXT1_X 45
 #define DYN_TEXT1_Y STAT_TEXT1_Y
 
+// tips text params
+#define TIPS_WIDTH 400
+#define TIPS_HEIGHT 250
+
 // game params
 #define SNAKE_LENGHT 5
 
