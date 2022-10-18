@@ -18,5 +18,5 @@ Code is divided into:
 - drawing helpers
 
 If you need to:
-- Change game parameters please check: params.game.h
+- Change game parameters, please check: params.game.h
 - Adjust interface: params.interface.h
