@@ -2,5 +2,7 @@
 
 #include "main.h"
 
-int updateScore(HWND hDynamicText, int score);
+int updateScore(int score);
+
+int getSnakeSpeed();
 //int MoveAllButtons(HWND hWindowMain, RECT GameField);
