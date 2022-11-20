@@ -8,5 +8,5 @@
 
 int moveSnake(HWND hWindowMain);
 BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown);
-int gameOver(HWND hWindowMain, int score);
+void gameOver(int score);
 int generateFood(RECT PlayGroundInBlocks, HWND hWindowMain);

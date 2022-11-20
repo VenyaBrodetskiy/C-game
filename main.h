@@ -17,10 +17,10 @@
 
 #define MAX_LOADSTRING 100
 
-enum Timers {
+typedef enum Timers {
     GAME_TIMER,
     FOOD_TIMER
-};
+} Timers;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);

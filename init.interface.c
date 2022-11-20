@@ -2,7 +2,7 @@
 
 extern WCHAR szTitle[MAX_LOADSTRING], szWindowClass[MAX_LOADSTRING];
 extern HINSTANCE    hInst;
-extern HWND hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgressBar;
+extern HWND hWindowMain, hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgressBar;
 
 int initGameButtons(HWND hWindowMain, RECT PlayGroundInPixels);
 int initRadioButtons(HWND hWindowMain, RECT PlayGroundInPixels);
@@ -25,7 +25,8 @@ BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT PlayGroundInPixels)
 {
     hInst = hInstance; // Store instance handle in our global variable
 
-    HWND hWindowMain = CreateWindowW(szWindowClass, L"Snake Game", WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
+    // store main window in global variable also
+    hWindowMain = CreateWindowW(szWindowClass, L"Snake Game", WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
         0, 0, PlayGroundInPixels.right + BUTTON_WIDTH + 20, PlayGroundInPixels.bottom + 39, NULL, NULL, hInstance, NULL);
     // 17 and 40 are just numbers to make it more beautiful. later change to expressions
 

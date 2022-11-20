@@ -10,6 +10,7 @@ BOOL         isEnabledWalls = TRUE;
 BOOL         isGamePaused = FALSE;
 
 // All Button handlers
+HWND hWindowMain;
 HWND hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgressBar;
 
 // snake
