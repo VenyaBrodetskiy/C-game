@@ -203,7 +203,6 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
                 drawPlayGround(hWindowMain, hdc, PlayGroundInPixels);
             }
 
-            
             EndPaint(hWindowMain, &ps);
         }
         break;
@@ -236,7 +235,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
 BOOL startNewGame(HWND hWindowMain)
 {
     initPlayGround(PlayGroundInBlocks, isEnabledWalls);
-    initSnake(PlayGroundInBlocks, hWindowMain);
+    initSnake(PlayGroundInBlocks);
     
     generateFood(PlayGroundInBlocks, hWindowMain); // inside this func food_timer is set
 

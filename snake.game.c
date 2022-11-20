@@ -3,7 +3,6 @@
 extern Snake snake;
 extern char **PlayGroundMap;
 extern RECT PlayGroundInBlocks, PlayGroundInPixels;
-extern HWND hDynamicText;
 extern BOOL isGameStarted;
 extern int foodBonus;
 
@@ -80,10 +79,11 @@ int moveSnake(HWND hWindowMain)
         break;
     case FOOD:
     {
+        Beep(2000, 10);
         snake.indexOfTail++;
 
         snake.score = snake.score + SCORE_INCREMENT + foodBonus;
-        updateScore(hDynamicText, snake.score);
+        updateScore(snake.score);
 
         KillTimer(hWindowMain, FOOD_TIMER);
         generateFood(PlayGroundInBlocks, hWindowMain);

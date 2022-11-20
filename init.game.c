@@ -3,7 +3,6 @@
 
 extern char **PlayGroundMap;
 extern Snake snake;
-extern HWND hTrackBar, hDynamicText;
 
 int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 {
@@ -49,15 +48,15 @@ int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 	return 1;
 }
 
-int initSnake(RECT PlayGroundInBlocks, HWND hWindowMain)
+int initSnake(RECT PlayGroundInBlocks)
 {
 	// clear points
 	snake.score = 0;
-	updateScore(hDynamicText, snake.score);
+	updateScore(snake.score);
 
 	// set direction and speed
 	snake.direct = RIGHT;
-	snake.speed = (int)SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
+	snake.speed = getSnakeSpeed();
 	snake.bonusSpeed = (int)round(snake.speed / BONUS_COEFF) + SPEED_MAX;
 
 	// init snake

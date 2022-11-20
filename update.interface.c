@@ -1,7 +1,7 @@
 #include "update.interface.h"
-extern HWND hButtonStart, hStaticText, hDynamicText;
+extern HWND hButtonStart, hStaticText, hDynamicText, hTrackBar;
 
-int updateScore(HWND hDynamicText, int score)
+int updateScore(int score)
 {
     wchar_t scoreString[15];
     swprintf_s(scoreString, 15, L"Score: %d", score);
@@ -9,6 +9,11 @@ int updateScore(HWND hDynamicText, int score)
     SetWindowTextW(hDynamicText, scoreString);
 
     return 1;
+}
+
+int getSnakeSpeed()
+{
+    return (int)SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
 }
 
 // currently this function is not used, because screen size is fixed

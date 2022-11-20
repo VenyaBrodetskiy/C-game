@@ -1,5 +1,4 @@
 #pragma once
-#include "main.h"
 
 // game params
 #define SNAKE_LENGHT 5

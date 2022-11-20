@@ -1,5 +1,9 @@
 #pragma once
-#include "main.h"
+#include "params.game.h"
+
+// ASK ALON (how can I remove it from here, I need BOOl and RECT)
+#include "windows.h"
+
 
 enum Field {
     EMPTY,
@@ -34,6 +38,6 @@ typedef struct Snake
 } Snake;
 
 int initPlayGround(RECT PlayGroundInPixels, BOOL isEnabledWalls);
-int initSnake(RECT PlayGroundInPixels, HWND hWindowMain);
+int initSnake(RECT PlayGroundInPixels);
 RECT GetPlayGroundInBlocks(int widthBlock, int heightBlock);
 RECT GetPlayGroundInPixels(RECT PlayGroundInBlocks, int pixelBlock);
