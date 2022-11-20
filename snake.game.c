@@ -107,10 +107,10 @@ int moveSnake(HWND hWindowMain)
     return 1;
 }
 
-int gameOver(HWND hWindowMain, int score)
+void gameOver(int score)
 {
-    KillTimer(hWindowMain, GAME_TIMER);
-    KillTimer(hWindowMain, FOOD_TIMER);
+    stopTimer(GAME_TIMER);
+    stopTimer(FOOD_TIMER);
     isGameStarted = FALSE;
 
     wchar_t message[120];
@@ -122,9 +122,9 @@ int gameOver(HWND hWindowMain, int score)
         swprintf_s(message, 120, L"Your score: %d \nAmazing result! \n\nPress Enter to try again", score);
     else 
         swprintf_s(message, 120, L"Your score: %d \nThis is crazy! \n\nPress Enter to try again", score);
-    HWND messageBox = MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
+    
+    popUpGameOver(message);
 
-    return 1;
 }
 
 int generateFood(RECT PlayGroundInBlocks, HWND hWindowMain)

@@ -1,5 +1,5 @@
 #include "update.interface.h"
-extern HWND hButtonStart, hStaticText, hDynamicText, hTrackBar;
+extern HWND hWindowMain, hButtonStart, hStaticText, hDynamicText, hTrackBar;
 
 int updateScore(int score)
 {
@@ -14,6 +14,16 @@ int updateScore(int score)
 int getSnakeSpeed()
 {
     return (int)SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
+}
+
+void stopTimer(int timer)
+{
+    KillTimer(hWindowMain, timer);
+}
+
+void popUpGameOver(wchar_t message)
+{
+    MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
 }
 
 // currently this function is not used, because screen size is fixed
