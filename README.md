@@ -21,7 +21,7 @@ Before you start playing, please choose game mode and speed.
 
 **[Click here to open small presentation about the game (5 slides)](https://www.slideshare.net/secret/qZUWXUwaYNnx1f)**
 
-Code is divided into components:
+Project components:
 * main
 * game logic: initialize snake, move snake, start new game, gameover, etc..
 * drawing snake and gamefield
