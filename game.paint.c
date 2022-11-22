@@ -1,4 +1,7 @@
+#include <windows.h>
 #include "game.paint.h"
+#include "init.game.h"
+#include "params.game.h"
 
 extern Snake snake;
 extern RECT PlayGroundInBlocks;
@@ -57,7 +60,7 @@ int drawGameField(HDC hdc, RECT PlayGroundInPixels)
     return 1;
 }
 
-int drawPlayGround(HWND hWindowMain, HDC hdc, RECT PlayGroundInPixels)
+int drawPlayGround(HDC hdc, RECT PlayGroundInPixels)
 {
     // create buffer - to draw in memory
     HDC bufferDC = CreateCompatibleDC(hdc);

@@ -1,9 +1,6 @@
 #pragma once
 #include "params.game.h"
-
-// ASK ALON (how can I remove it from here, I need BOOl and RECT)
-#include "windows.h"
-
+#include <windows.h>
 
 enum Field {
     EMPTY,
@@ -36,6 +33,23 @@ typedef struct Snake
     int bonusSpeed;
     int score;
 } Snake;
+
+typedef enum Timers {
+    GAME_TIMER,
+    FOOD_TIMER
+} Timers;
+
+// ask Alon how to make it work
+//typedef long LONG;
+//typedef int BOOL;
+//
+//typedef struct
+//{
+//    LONG    left;
+//    LONG    top;
+//    LONG    right;
+//    LONG    bottom;
+//} RECT, * PRECT;
 
 int initPlayGround(RECT PlayGroundInPixels, BOOL isEnabledWalls);
 int initSnake(RECT PlayGroundInPixels);

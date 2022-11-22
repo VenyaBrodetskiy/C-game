@@ -1,4 +1,9 @@
+#include "params.game.h"
+#include "params.interface.h"
+
 #include "init.interface.h"
+
+#include <commctrl.h>
 
 extern WCHAR szTitle[MAX_LOADSTRING], szWindowClass[MAX_LOADSTRING];
 extern HINSTANCE    hInst;
