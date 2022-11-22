@@ -1,7 +1,5 @@
 #pragma once
 
-#include "main.h"
-
 // tips text params
 #define BIG_TIPS_WIDTH 400
 #define BIG_TIPS_HEIGHT 250
@@ -14,6 +12,6 @@
 
 int drawGameTips(HDC hdc, RECT PlayGroundInPixels);
 int drawGameField(HDC hdc, RECT GameField);
-int drawPlayGround(HWND hWindowMain, HDC hdc, RECT GameField);
+int drawPlayGround(HDC hdc, RECT GameField);
 int drawSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);
 int drawRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);

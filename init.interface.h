@@ -1,5 +1,5 @@
 #pragma once
-#include "main.h"
+#include <windows.h>
 
 enum Buttons {
     BUTTON_START,

@@ -1,6 +1,8 @@
 #pragma once
 #include "main.h"
 
+#define MAX_LOADSTRING 100
+
 // button start sizes
 #define BUTTON_WIDTH 100 // Width of right-side menu
 #define BUTTON_HEIGHT 35

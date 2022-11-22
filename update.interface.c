@@ -1,5 +1,10 @@
+#include "params.interface.h"
+
 #include "update.interface.h"
-extern HWND hWindowMain, hButtonStart, hStaticText, hDynamicText, hTrackBar;
+
+#include <commctrl.h>
+
+extern HWND hWindowMain, hButtonStart, hStaticText, hDynamicText, hTrackBar, hButtonPause;
 
 int updateScore(int score)
 {
@@ -16,14 +21,32 @@ int getSnakeSpeed()
     return (int)SendMessageW(hTrackBar, TBM_GETPOS, 0, 0);
 }
 
+void setButtonContinue()
+{
+    SetWindowTextW(hButtonPause, L"Continue..");
+}
+
+void setButtonPause()
+{
+    SetWindowTextW(hButtonPause, L"Pause");
+}
+
+
+// maybe better to move these functions to other (game helpers)
+void createTimer(int timer, int speed)
+{
+    SetTimer(hWindowMain, timer, speed, NULL);
+}
+
+// maybe better to move these functions to other (game helpers)
 void stopTimer(int timer)
 {
     KillTimer(hWindowMain, timer);
 }
 
-void popUpGameOver(wchar_t message)
+void popUpGameOver(wchar_t message[])
 {
-    MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
+    HWND messageBox = MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
 }
 
 // currently this function is not used, because screen size is fixed
