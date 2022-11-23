@@ -52,11 +52,16 @@ void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 	// clear points
 	snake->score = 0;
 	updateScore(snake->score);
+	snake->foodBonus = MAX_BONUS;
 
 	// set direction and speed
 	snake->direct = RIGHT;
 	snake->speed = getSnakeSpeed();
 	snake->bonusSpeed = (int)round(snake->speed / BONUS_COEFF) + SPEED_MAX;
+
+	// clear game status variables
+	snake->isGameStarted = TRUE;
+	snake->isGamePaused = FALSE;
 
 	// init snake
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;

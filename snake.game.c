@@ -6,8 +6,6 @@
 // instead of including make dependency injection
 // function updateScore, stopTimer, popUpWindow send as pointers to functions
 
-extern BOOL isGameStarted, isGamePaused;
-
 BOOL changeSnakeDirection(WPARAM wParam, Snake* snake, BOOL isKeyDown)
 {
     switch (wParam)
@@ -76,7 +74,7 @@ void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
     case WALL:
     case SNAKE:
     {
-        gameOver(snake->score);
+        gameOver(snake);
     }
         break;
     case FOOD:
@@ -107,21 +105,21 @@ void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
     }
 }
 
-void gameOver(int score)
+void gameOver(Snake* snake)
 {
     stopTimer(GAME_TIMER);
     stopTimer(FOOD_TIMER);
-    isGameStarted = FALSE;
+    snake->isGameStarted = FALSE;
 
     wchar_t message[120];
-    if (score < LOW_RESULT) 
-        swprintf_s(message, 120, L"Your score: %d \nTry to adjust settings \n\nPress Enter to try again", score);
-    else if (score < AVERAGE_RESULT) 
-        swprintf_s(message, 120, L"Your score: %d \nכל הכבוד \n\nPress Enter to try again", score);
-    else if (score < HIGH_RESULT) 
-        swprintf_s(message, 120, L"Your score: %d \nAmazing result! \n\nPress Enter to try again", score);
+    if (snake->score < LOW_RESULT) 
+        swprintf_s(message, 120, L"Your score: %d \nTry to adjust settings \n\nPress Enter to try again", snake->score);
+    else if (snake->score < AVERAGE_RESULT)
+        swprintf_s(message, 120, L"Your score: %d \nכל הכבוד \n\nPress Enter to try again", snake->score);
+    else if (snake->score < HIGH_RESULT)
+        swprintf_s(message, 120, L"Your score: %d \nAmazing result! \n\nPress Enter to try again", snake->score);
     else 
-        swprintf_s(message, 120, L"Your score: %d \nThis is crazy! \n\nPress Enter to try again", score);
+        swprintf_s(message, 120, L"Your score: %d \nThis is crazy! \n\nPress Enter to try again", snake->score);
     
     popUpGameOver(message);
 
@@ -153,33 +151,29 @@ char** startNewGame(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks
     generateFood(snake, PlayGroundMap, PlayGroundInBlocks); // inside this func food_timer is set
 
     createTimer(GAME_TIMER, snake->speed);
-    isGameStarted = TRUE;
-    isGamePaused = FALSE;
+    
 
     setButtonPause();
 
     return PlayGroundMap;
 }
 
-BOOL pauseGame()
+void pauseGame(Snake* snake)
 {
     stopTimer(GAME_TIMER);
     stopTimer(FOOD_TIMER);
 
     setButtonContinue();
 
-    BOOL isGamePaused = TRUE;
-
-    return isGamePaused;
+    snake->isGamePaused = TRUE;
 }
 
-BOOL resumeGame(Snake* snake)
+void resumeGame(Snake* snake)
 {
     createTimer(GAME_TIMER, snake->speed);
     createTimer(FOOD_TIMER, snake->bonusSpeed);
 
     setButtonPause();
-    BOOL isGamePaused = FALSE;
 
-    return isGamePaused;
+    snake->isGamePaused = FALSE;
 }

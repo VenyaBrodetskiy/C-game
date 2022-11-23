@@ -17,10 +17,8 @@
 HINSTANCE    hInst;                                // current instance
 WCHAR        szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR        szWindowClass[MAX_LOADSTRING];            // the main window class name
-BOOL         isGameStarted = FALSE;
 BOOL         isKeyDown = FALSE;
 BOOL         isEnabledWalls = TRUE;
-BOOL         isGamePaused = FALSE;
 
 // All Button handlers
 HWND hWindowMain;
@@ -48,6 +46,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // init Playground for Snake 
     PlayGroundInBlocks = GetPlayGroundInBlocks(FIELD_WIDTH, FIELD_HEIGHT);
     PlayGroundInPixels = GetPlayGroundInPixels(PlayGroundInBlocks, PIXEL_BLOCK);
+
+    snake.isGameStarted = FALSE;
+    snake.isGamePaused = FALSE;
 
     // Perform application initialization:
     if (!InitMainWindow(hInstance, nCmdShow, PlayGroundInPixels))
@@ -134,13 +135,13 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
             break;
         case BUTTON_PAUSE:
-            if (isGameStarted && isGamePaused)
+            if (snake.isGameStarted && snake.isGamePaused)
             {
-                isGamePaused = resumeGame(&snake);
+                resumeGame(&snake);
             }
-            else if (isGameStarted && !isGamePaused)
+            else if (snake.isGameStarted && !snake.isGamePaused)
             {
-                isGamePaused = pauseGame();
+                pauseGame(&snake);
             }
             break;
         case RADIO_NOWALLS:
@@ -160,11 +161,11 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         switch (wParam)
         {
         case GAME_TIMER:
-            if (isGameStarted)
+            if (snake.isGameStarted)
             {
                 isKeyDown = FALSE;
                 moveSnake(&snake, PlayGroundMap, PlayGroundInBlocks);
-                drawPlayGround(&snake, hdc, PlayGroundInPixels);
+                drawPlayGround(hdc, &snake, PlayGroundMap, PlayGroundInPixels, PlayGroundInBlocks);
             }
             break;
         case FOOD_TIMER:
@@ -180,16 +181,16 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         isKeyDown = changeSnakeDirection(wParam, &snake, isKeyDown);
         break;
     case WM_KEYUP:
-        if (wParam == VK_RETURN && (!isGameStarted || isGamePaused))
+        if (wParam == VK_RETURN && (!snake.isGameStarted || snake.isGamePaused))
             PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
         
-        if (wParam == VK_SPACE && isGameStarted && isGamePaused)
+        if (wParam == VK_SPACE && snake.isGameStarted && snake.isGamePaused)
         {
-            isGamePaused = resumeGame(&snake);
+            resumeGame(&snake);
         }
-        else if (wParam == VK_SPACE && isGameStarted && !isGamePaused)
+        else if (wParam == VK_SPACE && snake.isGameStarted && !snake.isGamePaused)
         {
-            isGamePaused = pauseGame();
+            pauseGame(&snake);
         }
 
         break;
@@ -206,14 +207,14 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             // hdc is handle to device context
             HDC hdc = BeginPaint(hWindowMain, &ps);
 
-            if (!isGameStarted)
+            if (!snake.isGameStarted)
             {
                 drawGameField(hdc, PlayGroundInPixels);
                 drawGameTips(hdc, PlayGroundInPixels);
             }
             else
             {
-                drawPlayGround(&snake, hdc, PlayGroundInPixels);
+                drawPlayGround(hdc, &snake, PlayGroundMap, PlayGroundInPixels, PlayGroundInBlocks);
             }
 
             EndPaint(hWindowMain, &ps);
@@ -225,12 +226,12 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         switch (wParam)
         {
         case SIZE_MINIMIZED:
-            isGamePaused = pauseGame();
+            pauseGame(&snake);
             break;
         case SIZE_RESTORED:
-            if (isGameStarted && !isGamePaused)
+            if (snake.isGameStarted && !snake.isGamePaused)
             {
-                isGamePaused = resumeGame(&snake);
+                resumeGame(&snake);
             }
             break;
         }
