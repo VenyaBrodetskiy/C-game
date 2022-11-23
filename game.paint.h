@@ -12,6 +12,6 @@
 
 int drawGameTips(HDC hdc, RECT_ PlayGroundInPixels);
 int drawGameField(HDC hdc, RECT_ GameField);
-int drawPlayGround(Snake* snake, HDC hdc, RECT_ GameField);
+int drawPlayGround(HDC hdc, Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInPixels, RECT_ PlayGroundInBlocks);
 int drawSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);
 int drawRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);

@@ -4,10 +4,6 @@
 #include "common_entities.h"
 #include "game.paint.h"
 
-extern RECT_ PlayGroundInBlocks;
-extern char **PlayGroundMap;
-extern int foodBonus;
-
 int drawGameTips(HDC hdc, RECT_ PlayGroundInPixels)
 {
     HWND hFont1 = CreateFontW(20, 0, 0, 0, FW_SEMIBOLD, 0, 0, 0, 0, 0, 0, 0, 0, L"Consolas");
@@ -60,7 +56,7 @@ int drawGameField(HDC hdc, RECT_ PlayGroundInPixels)
     return 1;
 }
 
-int drawPlayGround(Snake* snake, HDC hdc, RECT_ PlayGroundInPixels)
+int drawPlayGround(HDC hdc, Snake* snake, char**PlayGroundMap, RECT_ PlayGroundInPixels, RECT_ PlayGroundInBlocks)
 {
     // create buffer - to draw in memory
     HDC bufferDC = CreateCompatibleDC(hdc);
