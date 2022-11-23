@@ -1,6 +1,6 @@
 #pragma once
 #include "params.game.h"
-#include <windows.h>
+#include "common_entities.h"
 
 enum Field {
     EMPTY,
@@ -39,19 +39,8 @@ typedef enum Timers {
     FOOD_TIMER
 } Timers;
 
-// ask Alon how to make it work
-//typedef long LONG;
-//typedef int BOOL;
-//
-//typedef struct
-//{
-//    LONG    left;
-//    LONG    top;
-//    LONG    right;
-//    LONG    bottom;
-//} RECT, * PRECT;
 
-int initPlayGround(RECT PlayGroundInPixels, BOOL isEnabledWalls);
-int initSnake(RECT PlayGroundInPixels);
-RECT GetPlayGroundInBlocks(int widthBlock, int heightBlock);
-RECT GetPlayGroundInPixels(RECT PlayGroundInBlocks, int pixelBlock);
+int initPlayGround(RECT_ PlayGroundInPixels, BOOL isEnabledWalls);
+int initSnake(RECT_ PlayGroundInPixels);
+RECT_ GetPlayGroundInBlocks(int widthBlock, int heightBlock);
+RECT_ GetPlayGroundInPixels(RECT_ PlayGroundInBlocks, int pixelBlock);

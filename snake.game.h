@@ -9,7 +9,7 @@
 int moveSnake();
 BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown);
 void gameOver(int score);
-int generateFood(RECT PlayGroundInBlocks);
+int generateFood(RECT_ PlayGroundInBlocks);
 BOOL startNewGame(BOOL isEnabledWalls);
 BOOL resumeGame();
 BOOL pauseGame();

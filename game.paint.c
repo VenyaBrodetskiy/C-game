@@ -1,21 +1,23 @@
 #include <windows.h>
+
+#include "common_entities.h"
 #include "game.paint.h"
 #include "init.game.h"
 #include "params.game.h"
 
 extern Snake snake;
-extern RECT PlayGroundInBlocks;
+extern RECT_ PlayGroundInBlocks;
 extern char **PlayGroundMap;
 extern int foodBonus;
 
-int drawGameTips(HDC hdc, RECT PlayGroundInPixels)
+int drawGameTips(HDC hdc, RECT_ PlayGroundInPixels)
 {
     HWND hFont1 = CreateFontW(20, 0, 0, 0, FW_SEMIBOLD, 0, 0, 0, 0, 0, 0, 0, 0, L"Consolas");
     HWND hOldFont = SelectObject(hdc, hFont1);
     SetTextColor(hdc, COLOR_SNAKE);
     SetBkColor(hdc, COLOR_BLACK);
 
-    RECT textRect =
+    RECT_ textRect =
     {
         (PlayGroundInPixels.right - BIG_TIPS_WIDTH) / 2,
         (PlayGroundInPixels.bottom - BIG_TIPS_HEIGHT) / 2,
@@ -41,7 +43,7 @@ int drawGameTips(HDC hdc, RECT PlayGroundInPixels)
     return 1;
 }
 
-int drawGameField(HDC hdc, RECT PlayGroundInPixels)
+int drawGameField(HDC hdc, RECT_ PlayGroundInPixels)
 {
     HBRUSH hBrush = CreateSolidBrush(COLOR_BLACK);
     HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
@@ -60,7 +62,7 @@ int drawGameField(HDC hdc, RECT PlayGroundInPixels)
     return 1;
 }
 
-int drawPlayGround(HDC hdc, RECT PlayGroundInPixels)
+int drawPlayGround(HDC hdc, RECT_ PlayGroundInPixels)
 {
     // create buffer - to draw in memory
     HDC bufferDC = CreateCompatibleDC(hdc);

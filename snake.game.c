@@ -1,4 +1,6 @@
-﻿#include "snake.game.h"
+﻿#include "common_entities.h"
+
+#include "snake.game.h"
 #include "init.game.h"
 #include "update.interface.h"
 // instead of including make dependency injection
@@ -7,7 +9,7 @@
 
 extern Snake snake;
 extern char **PlayGroundMap;
-extern RECT PlayGroundInBlocks;
+extern RECT_ PlayGroundInBlocks;
 extern BOOL isGameStarted, isGamePaused;
 extern int foodBonus;
 
@@ -132,7 +134,7 @@ void gameOver(int score)
 
 }
 
-int generateFood(RECT PlayGroundInBlocks)
+int generateFood(RECT_ PlayGroundInBlocks)
 {
     // need to try make it function async
     Point food = { 0 };

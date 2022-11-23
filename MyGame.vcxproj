@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="common_entities.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="game.paint.h" />
     <ClInclude Include="init.interface.h" />
