@@ -4,7 +4,7 @@
 
 **This is NOKIA inspired snake!**
 
-![Game picture](https://github.com/VenyaBrodetskiy/C-game/blob/remove-some-dependencies/game-picture.png)
+![Game picture](https://github.com/VenyaBrodetskiy/C-game/blob/master/game-picture.png)
 
 ## How to play
 **[Click here to open short gameplay video (1:30)](https://drive.google.com/file/d/1MUMOO5lc4WVqBsTg3m7COB2HKTbQlrnJ/view?usp=share_link)**
