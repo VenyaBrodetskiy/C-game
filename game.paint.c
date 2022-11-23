@@ -1,11 +1,9 @@
 #include <windows.h>
 
+#include "params.game.h"
 #include "common_entities.h"
 #include "game.paint.h"
-#include "init.game.h"
-#include "params.game.h"
 
-extern Snake snake;
 extern RECT_ PlayGroundInBlocks;
 extern char **PlayGroundMap;
 extern int foodBonus;
@@ -62,7 +60,7 @@ int drawGameField(HDC hdc, RECT_ PlayGroundInPixels)
     return 1;
 }
 
-int drawPlayGround(HDC hdc, RECT_ PlayGroundInPixels)
+int drawPlayGround(Snake* snake, HDC hdc, RECT_ PlayGroundInPixels)
 {
     // create buffer - to draw in memory
     HDC bufferDC = CreateCompatibleDC(hdc);
@@ -80,7 +78,7 @@ int drawPlayGround(HDC hdc, RECT_ PlayGroundInPixels)
             switch (PlayGroundMap[x][y])
             {
             case SNAKE:
-                if (snake.head.x == x && snake.head.y == y) drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, COLOR_SNAKE);
+                if (snake->head.x == x && snake->head.y == y) drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, COLOR_SNAKE);
                 else drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, RGB(0, 0, 100));
                 break;
             case WALL:
@@ -88,7 +86,7 @@ int drawPlayGround(HDC hdc, RECT_ PlayGroundInPixels)
                 break;
             case FOOD:
             {
-                int green = 128 - foodBonus;
+                int green = 128 - snake->foodBonus;
                 int blue = green;
                 COLORREF color_food = RGB(200, green, blue);
                 drawRoundBlock(bufferDC, x, y, color_food, color_food);
