@@ -3,11 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-
-extern char **PlayGroundMap;
-extern Snake snake;
-
-int initPlayGround(RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
+char** initPlayGround(char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
 {
 	if (PlayGroundInBlocks.bottom <= 1 || PlayGroundInBlocks.right <= 1) return 0;
 
@@ -48,19 +44,19 @@ int initPlayGround(RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
 		}
 	}
 
-	return 1;
+	return PlayGroundMap;
 }
 
-int initSnake(RECT_ PlayGroundInBlocks)
+void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 {
 	// clear points
-	snake.score = 0;
-	updateScore(snake.score);
+	snake->score = 0;
+	updateScore(snake->score);
 
 	// set direction and speed
-	snake.direct = RIGHT;
-	snake.speed = getSnakeSpeed();
-	snake.bonusSpeed = (int)round(snake.speed / BONUS_COEFF) + SPEED_MAX;
+	snake->direct = RIGHT;
+	snake->speed = getSnakeSpeed();
+	snake->bonusSpeed = (int)round(snake->speed / BONUS_COEFF) + SPEED_MAX;
 
 	// init snake
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
@@ -68,21 +64,19 @@ int initSnake(RECT_ PlayGroundInBlocks)
 	
 	for (int index = 0; index < SNAKE_LENGHT; index++)
 	{
-		if (index < sizeof(snake.body))
+		if (index < sizeof(snake->body))
 		{
-			snake.body[index].x = center_x - index;
-			snake.body[index].y = center_y;
-			PlayGroundMap[snake.body[index].x][snake.body[index].y] = SNAKE;
+			snake->body[index].x = center_x - index;
+			snake->body[index].y = center_y;
+			PlayGroundMap[snake->body[index].x][snake->body[index].y] = SNAKE;
 		}
 		
 	}
 	// find head and tail
-	snake.indexOfTail = SNAKE_LENGHT - 1;
+	snake->indexOfTail = SNAKE_LENGHT - 1;
 
-	snake.head = snake.body[0];
-	snake.tail = snake.body[snake.indexOfTail];
-
-	return 1;
+	snake->head = snake->body[0];
+	snake->tail = snake->body[snake->indexOfTail];
 }
 
 RECT_ GetPlayGroundInBlocks(int widthBlock, int heightBlock)

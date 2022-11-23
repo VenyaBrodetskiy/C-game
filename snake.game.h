@@ -6,10 +6,10 @@
 #define AVERAGE_RESULT 200
 #define HIGH_RESULT 500
 
-int moveSnake();
-BOOL changeSnakeDirection(WPARAM wParam, BOOL isKeyDown);
+void moveSnake(Snake* snake);
+BOOL changeSnakeDirection(WPARAM wParam, Snake* snake, BOOL isKeyDown);
 void gameOver(int score);
-int generateFood(RECT_ PlayGroundInBlocks);
-BOOL startNewGame(BOOL isEnabledWalls);
-BOOL resumeGame();
+int generateFood(Snake* snake, RECT_ PlayGroundInBlocks);
+BOOL startNewGame(Snake* snake, BOOL isEnabledWalls);
+BOOL resumeGame(Snake* snake);
 BOOL pauseGame();

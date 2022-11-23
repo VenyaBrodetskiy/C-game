@@ -40,7 +40,7 @@ typedef enum Timers {
 } Timers;
 
 
-int initPlayGround(RECT_ PlayGroundInPixels, BOOL isEnabledWalls);
-int initSnake(RECT_ PlayGroundInPixels);
+char** initPlayGround(char** PlayGroundMap, RECT_ PlayGroundInPixels, BOOL isEnabledWalls);
+void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInPixels);
 RECT_ GetPlayGroundInBlocks(int widthBlock, int heightBlock);
 RECT_ GetPlayGroundInPixels(RECT_ PlayGroundInBlocks, int pixelBlock);
