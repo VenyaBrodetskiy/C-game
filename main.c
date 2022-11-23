@@ -132,12 +132,12 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         switch (wmId)
         {
         case BUTTON_START:
-            isGameStarted = startNewGame(isEnabledWalls);
+            isGameStarted = startNewGame(&snake, isEnabledWalls);
             break;
         case BUTTON_PAUSE:
             if (isGameStarted && isGamePaused)
             {
-                isGamePaused = resumeGame();;
+                isGamePaused = resumeGame(&snake);
             }
             else if (isGameStarted && !isGamePaused)
             {
@@ -164,7 +164,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             if (isGameStarted)
             {
                 isKeyDown = FALSE;
-                moveSnake();
+                moveSnake(&snake);
                 drawPlayGround(hdc, PlayGroundInPixels);
             }
             break;
@@ -178,19 +178,19 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         }
     }
     case WM_KEYDOWN:
-        isKeyDown = changeSnakeDirection(wParam, isKeyDown);
+        isKeyDown = changeSnakeDirection(wParam, &snake, isKeyDown);
         break;
     case WM_KEYUP:
         if (wParam == VK_RETURN && (!isGameStarted || isGamePaused))
-            startNewGame(isEnabledWalls);
+            startNewGame(&snake, isEnabledWalls);
         
         if (wParam == VK_SPACE && isGameStarted && isGamePaused)
         {
-            isGamePaused = resumeGame(hWindowMain);
+            isGamePaused = resumeGame(&snake);
         }
         else if (wParam == VK_SPACE && isGameStarted && !isGamePaused)
         {
-            isGamePaused = pauseGame(hWindowMain);
+            isGamePaused = pauseGame();
         }
 
         break;
@@ -231,7 +231,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         case SIZE_RESTORED:
             if (isGameStarted && !isGamePaused)
             {
-                isGamePaused = resumeGame();
+                isGamePaused = resumeGame(&snake);
             }
             break;
         }
