@@ -1,6 +1,8 @@
 #include "params.game.h"
 #include "params.interface.h"
 
+#include "common_entities.h"
+
 #include "init.interface.h"
 #include "update.interface.h"
 
@@ -26,7 +28,7 @@ HWND hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgress
 
 // snake
 HDC hdc;
-RECT PlayGroundInPixels, PlayGroundInBlocks;
+RECT_ PlayGroundInPixels, PlayGroundInBlocks;
 Snake snake;
 char **PlayGroundMap;
 int foodBonus;

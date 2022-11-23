@@ -10,8 +10,8 @@
 #define COLOR_FOOD RGB(255, 128, 128)
 #define COLOR_BLACK RGB(0, 0, 0)
 
-int drawGameTips(HDC hdc, RECT PlayGroundInPixels);
-int drawGameField(HDC hdc, RECT GameField);
-int drawPlayGround(HDC hdc, RECT GameField);
+int drawGameTips(HDC hdc, RECT_ PlayGroundInPixels);
+int drawGameField(HDC hdc, RECT_ GameField);
+int drawPlayGround(HDC hdc, RECT_ GameField);
 int drawSquareBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);
 int drawRoundBlock(HDC dc, int x, int y, COLORREF brush, COLORREF pen);

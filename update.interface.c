@@ -1,5 +1,7 @@
 #include "params.interface.h"
 
+#include "common_entities.h"
+
 #include "update.interface.h"
 
 #include <commctrl.h>
@@ -50,7 +52,7 @@ void popUpGameOver(wchar_t message[])
 }
 
 // currently this function is not used, because screen size is fixed
-int MoveAllButtons(HWND hWindowMain, RECT GameField)
+int MoveAllButtons(HWND hWindowMain, RECT_ GameField)
 {
     SetWindowPos(hButtonStart, NULL,
         GameField.right, 0,

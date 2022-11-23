@@ -16,5 +16,5 @@ enum Buttons {
     PROGRESS_BAR
 };
 
-BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT PlayGroundInPixels);
-int createButtons(HWND hWindowMain, RECT PlayGroundInPixels);
+BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT_ PlayGroundInPixels);
+int createButtons(HWND hWindowMain, RECT_ PlayGroundInPixels);

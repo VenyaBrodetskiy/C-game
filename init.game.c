@@ -1,10 +1,13 @@
+#include "common_entities.h"
 #include "init.game.h"
 #include <math.h>
+#include <stdlib.h>
+
 
 extern char **PlayGroundMap;
 extern Snake snake;
 
-int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
+int initPlayGround(RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
 {
 	if (PlayGroundInBlocks.bottom <= 1 || PlayGroundInBlocks.right <= 1) return 0;
 
@@ -48,7 +51,7 @@ int initPlayGround(RECT PlayGroundInBlocks, BOOL isEnabledWalls)
 	return 1;
 }
 
-int initSnake(RECT PlayGroundInBlocks)
+int initSnake(RECT_ PlayGroundInBlocks)
 {
 	// clear points
 	snake.score = 0;
@@ -82,9 +85,9 @@ int initSnake(RECT PlayGroundInBlocks)
 	return 1;
 }
 
-RECT GetPlayGroundInBlocks(int widthBlock, int heightBlock)
+RECT_ GetPlayGroundInBlocks(int widthBlock, int heightBlock)
 {
-	RECT PlayGroundInBlocks = { 0 };
+	RECT_ PlayGroundInBlocks = { 0 };
 	PlayGroundInBlocks.left = 0; // if some bug happens, change to 1
 	PlayGroundInBlocks.top = 0; // if some bug happens, change to 1
 	PlayGroundInBlocks.bottom = heightBlock;
@@ -93,9 +96,9 @@ RECT GetPlayGroundInBlocks(int widthBlock, int heightBlock)
 	return PlayGroundInBlocks;
 }
 
-RECT GetPlayGroundInPixels(RECT PlayGroundInBlocks, int pixelBlock)
+RECT_ GetPlayGroundInPixels(RECT_ PlayGroundInBlocks, int pixelBlock)
 {
-	RECT PlayGroundInPixels = { 0 };
+	RECT_ PlayGroundInPixels = { 0 };
 	PlayGroundInPixels.left = 0;
 	PlayGroundInPixels.top = 0;
 	PlayGroundInPixels.right = PlayGroundInBlocks.right * pixelBlock;

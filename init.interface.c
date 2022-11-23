@@ -1,6 +1,8 @@
 #include "params.game.h"
 #include "params.interface.h"
 
+#include "common_entities.h"
+
 #include "init.interface.h"
 
 #include <commctrl.h>
@@ -9,11 +11,11 @@ extern WCHAR szTitle[MAX_LOADSTRING], szWindowClass[MAX_LOADSTRING];
 extern HINSTANCE    hInst;
 extern HWND hWindowMain, hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgressBar;
 
-int initGameButtons(HWND hWindowMain, RECT PlayGroundInPixels);
-int initRadioButtons(HWND hWindowMain, RECT PlayGroundInPixels);
-int initTrackBar(HWND hWindowMain, RECT PlayGroundInPixels);
-int initTips(HWND hWindowMain, RECT PlayGroundInPixels);
-int initBonusBarAndScore(HWND hWindowMain, RECT PlayGroundInPixels);
+int initGameButtons(HWND hWindowMain, RECT_ PlayGroundInPixels);
+int initRadioButtons(HWND hWindowMain, RECT_ PlayGroundInPixels);
+int initTrackBar(HWND hWindowMain, RECT_ PlayGroundInPixels);
+int initTips(HWND hWindowMain, RECT_ PlayGroundInPixels);
+int initBonusBarAndScore(HWND hWindowMain, RECT_ PlayGroundInPixels);
 
 
 //
@@ -26,7 +28,7 @@ int initBonusBarAndScore(HWND hWindowMain, RECT PlayGroundInPixels);
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT PlayGroundInPixels)
+BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT_ PlayGroundInPixels)
 {
     hInst = hInstance; // Store instance handle in our global variable
 
@@ -46,7 +48,7 @@ BOOL InitMainWindow(HINSTANCE hInstance, int nCmdShow, RECT PlayGroundInPixels)
     return TRUE;
 }
 
-int createButtons(HWND hWindowMain, RECT PlayGroundInPixels)
+int createButtons(HWND hWindowMain, RECT_ PlayGroundInPixels)
 {
     initGameButtons(hWindowMain, PlayGroundInPixels);
 
@@ -61,7 +63,7 @@ int createButtons(HWND hWindowMain, RECT PlayGroundInPixels)
     return TRUE;
 }
 
-int initGameButtons(HWND hWindowMain, RECT PlayGroundInPixels)
+int initGameButtons(HWND hWindowMain, RECT_ PlayGroundInPixels)
 {
     hButtonStart = CreateWindowW(L"Button", L"New game",
         WS_VISIBLE | WS_CHILD,
@@ -75,7 +77,7 @@ int initGameButtons(HWND hWindowMain, RECT PlayGroundInPixels)
     return 1;
 }
 
-int initRadioButtons(HWND hWindowMain, RECT PlayGroundInPixels)
+int initRadioButtons(HWND hWindowMain, RECT_ PlayGroundInPixels)
 {
     CreateWindowW(L"Button", L"Game mode",
         WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
@@ -95,7 +97,7 @@ int initRadioButtons(HWND hWindowMain, RECT PlayGroundInPixels)
     return 1;
 }
 
-int initTrackBar(HWND hWindowMain, RECT PlayGroundInPixels)
+int initTrackBar(HWND hWindowMain, RECT_ PlayGroundInPixels)
 {
     CreateWindowW(L"Button", L"Snake Speed",
         WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
@@ -123,7 +125,7 @@ int initTrackBar(HWND hWindowMain, RECT PlayGroundInPixels)
     return 1;
 }
 
-int initTips(HWND hWindowMain, RECT PlayGroundInPixels)
+int initTips(HWND hWindowMain, RECT_ PlayGroundInPixels)
 {
     CreateWindowW(L"static",
         L"Tips:\nMove - Arrows\nPause - Space\nNew - Enter",
@@ -134,7 +136,7 @@ int initTips(HWND hWindowMain, RECT PlayGroundInPixels)
     return 1;
 }
 
-int initBonusBarAndScore(HWND hWindowMain, RECT PlayGroundInPixels)
+int initBonusBarAndScore(HWND hWindowMain, RECT_ PlayGroundInPixels)
 {
     hProgressBar = CreateWindowW(PROGRESS_CLASSW, L"Trackbar Control",
         WS_CHILD | WS_VISIBLE | PBS_SMOOTH,
