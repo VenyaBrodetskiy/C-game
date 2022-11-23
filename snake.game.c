@@ -6,11 +6,7 @@
 // instead of including make dependency injection
 // function updateScore, stopTimer, popUpWindow send as pointers to functions
 
-
-extern char **PlayGroundMap;
-extern RECT_ PlayGroundInBlocks;
 extern BOOL isGameStarted, isGamePaused;
-extern int foodBonus;
 
 BOOL changeSnakeDirection(WPARAM wParam, Snake* snake, BOOL isKeyDown)
 {
@@ -49,7 +45,7 @@ BOOL changeSnakeDirection(WPARAM wParam, Snake* snake, BOOL isKeyDown)
     return isKeyDown;
 }
 
-void moveSnake(Snake* snake)
+void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 {
     // count next step
     switch (snake->direct)
@@ -88,11 +84,11 @@ void moveSnake(Snake* snake)
         Beep(2000, 10);
         snake->indexOfTail++;
 
-        snake->score = snake->score + SCORE_INCREMENT + foodBonus;
+        snake->score = snake->score + SCORE_INCREMENT + snake->foodBonus;
         updateScore(snake->score);
 
         stopTimer(FOOD_TIMER);
-        generateFood(snake, PlayGroundInBlocks);
+        generateFood(snake, PlayGroundMap, PlayGroundInBlocks);
     }
     // here no need break, as further actions are same as if there is no food
     case EMPTY:
@@ -131,7 +127,7 @@ void gameOver(int score)
 
 }
 
-int generateFood(Snake* snake, RECT_ PlayGroundInBlocks)
+int generateFood(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 {
     // need to try make it function async
     Point food = { 0 };
@@ -143,18 +139,18 @@ int generateFood(Snake* snake, RECT_ PlayGroundInBlocks)
 
     PlayGroundMap[food.x][food.y] = FOOD;
     
-    foodBonus = MAX_BONUS;
+    snake->foodBonus = MAX_BONUS;
     createTimer(FOOD_TIMER, snake->bonusSpeed);
 
     return 1;
 }
 
-BOOL startNewGame(Snake* snake, BOOL isEnabledWalls)
+char** startNewGame(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
 {
     PlayGroundMap = initPlayGround(PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
     initSnake(snake, PlayGroundMap, PlayGroundInBlocks);
 
-    generateFood(snake, PlayGroundInBlocks); // inside this func food_timer is set
+    generateFood(snake, PlayGroundMap, PlayGroundInBlocks); // inside this func food_timer is set
 
     createTimer(GAME_TIMER, snake->speed);
     isGameStarted = TRUE;
@@ -162,7 +158,7 @@ BOOL startNewGame(Snake* snake, BOOL isEnabledWalls)
 
     setButtonPause();
 
-    return isGameStarted;
+    return PlayGroundMap;
 }
 
 BOOL pauseGame()

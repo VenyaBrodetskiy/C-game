@@ -31,7 +31,6 @@ HDC hdc;
 RECT_ PlayGroundInPixels, PlayGroundInBlocks;
 Snake snake;
 char **PlayGroundMap;
-int foodBonus;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -132,7 +131,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         switch (wmId)
         {
         case BUTTON_START:
-            isGameStarted = startNewGame(&snake, isEnabledWalls);
+            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
             break;
         case BUTTON_PAUSE:
             if (isGameStarted && isGamePaused)
@@ -164,15 +163,15 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             if (isGameStarted)
             {
                 isKeyDown = FALSE;
-                moveSnake(&snake);
-                drawPlayGround(hdc, PlayGroundInPixels);
+                moveSnake(&snake, PlayGroundMap, PlayGroundInBlocks);
+                drawPlayGround(&snake, hdc, PlayGroundInPixels);
             }
             break;
         case FOOD_TIMER:
-            if (foodBonus > 0)
+            if (snake.foodBonus > 0)
             {
-                foodBonus--;
-                SendMessageW(hProgressBar, PBM_SETPOS, (WPARAM)foodBonus, 0);
+                snake.foodBonus--;
+                SendMessageW(hProgressBar, PBM_SETPOS, (WPARAM)snake.foodBonus, 0);
             }
             break;
         }
@@ -182,7 +181,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         break;
     case WM_KEYUP:
         if (wParam == VK_RETURN && (!isGameStarted || isGamePaused))
-            startNewGame(&snake, isEnabledWalls);
+            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
         
         if (wParam == VK_SPACE && isGameStarted && isGamePaused)
         {
@@ -214,7 +213,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             }
             else
             {
-                drawPlayGround(hdc, PlayGroundInPixels);
+                drawPlayGround(&snake, hdc, PlayGroundInPixels);
             }
 
             EndPaint(hWindowMain, &ps);
