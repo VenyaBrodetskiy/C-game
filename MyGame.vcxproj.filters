@@ -31,6 +31,12 @@
     <Filter Include="Header Files\gamelogic">
       <UniqueIdentifier>{30367f24-d4c8-40c2-a24d-77656b463f0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\linked list">
+      <UniqueIdentifier>{4a1731e6-9679-49e9-8aa8-dd69dda75e47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\linked list">
+      <UniqueIdentifier>{1f05dc95-629e-4fad-8e89-2d8a8c15df8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -69,6 +75,12 @@
     <ClInclude Include="common_entities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="linked.list.h">
+      <Filter>Header Files\linked list</Filter>
+    </ClInclude>
+    <ClInclude Include="private.list.h">
+      <Filter>Header Files\linked list</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -88,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="init.game.c">
       <Filter>Source Files\gamelogic</Filter>
+    </ClCompile>
+    <ClCompile Include="linked.list.c">
+      <Filter>Source Files\linked list</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
