@@ -1,6 +1,11 @@
 #pragma once
 #include "params.game.h"
 
+#ifndef GAME_FOR_WIN_API
+#define GAME_FOR_WIN_API
+#endif // !GAME_FOR_WIN_API
+
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -59,3 +64,5 @@ typedef enum Timers {
     GAME_TIMER,
     FOOD_TIMER
 } Timers;
+
+typedef void* KEYDOWN;

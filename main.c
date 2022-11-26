@@ -178,8 +178,11 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         }
     }
     case WM_KEYDOWN:
-        isKeyDown = changeSnakeDirection(wParam, &snake, isKeyDown);
+    {
+        KEYDOWN keyDown = (KEYDOWN)&wParam;
+        isKeyDown = changeSnakeDirection(keyDown, &snake, isKeyDown);
         break;
+    }
     case WM_KEYUP:
         if (wParam == VK_RETURN && (!snake.isGameStarted || snake.isGamePaused))
             PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);

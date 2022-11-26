@@ -3,12 +3,17 @@
 #include "init.game.h"
 #include "snake.game.h"
 #include "update.interface.h"
+
+#include <stdlib.h>
+#include <stdio.h>
 // instead of including make dependency injection
 // function updateScore, stopTimer, popUpWindow send as pointers to functions
 
-BOOL changeSnakeDirection(WPARAM wParam, Snake* snake, BOOL isKeyDown)
-{
-    switch (wParam)
+BOOL changeSnakeDirection(KEYDOWN keyDown, Snake* snake, BOOL isKeyDown)
+{   
+    localKEYDOWN localKeyDown = toLocalKeyDown(keyDown);
+
+    switch (*localKeyDown)
     {
     case VK_UP:
         if (snake->direct != DOWN && !isKeyDown) 
@@ -112,7 +117,7 @@ void gameOver(Snake* snake)
     snake->isGameStarted = FALSE;
 
     wchar_t message[120];
-    if (snake->score < LOW_RESULT) 
+    if (snake->score < LOW_RESULT)
         swprintf_s(message, 120, L"Your score: %d \nTry to adjust settings \n\nPress Enter to try again", snake->score);
     else if (snake->score < AVERAGE_RESULT)
         swprintf_s(message, 120, L"Your score: %d \nכל הכבוד \n\nPress Enter to try again", snake->score);

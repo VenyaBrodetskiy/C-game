@@ -1,6 +1,8 @@
 #include "params.interface.h"
-
 #include "common_entities.h"
+
+#include <tchar.h>
+#include "windows.h" 
 
 #include "update.interface.h"
 
@@ -49,6 +51,11 @@ void stopTimer(int timer)
 void popUpGameOver(wchar_t message[])
 {
     HWND messageBox = MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
+}
+
+localKEYDOWN toLocalKeyDown(KEYDOWN keyDown)
+{
+    return (localKEYDOWN*)keyDown;
 }
 
 // currently this function is not used, because screen size is fixed
