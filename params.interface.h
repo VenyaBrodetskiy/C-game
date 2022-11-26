@@ -1,6 +1,4 @@
 #pragma once
-#include "main.h"
-
 #define MAX_LOADSTRING 100
 
 // button start sizes
