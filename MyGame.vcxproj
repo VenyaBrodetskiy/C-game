@@ -132,8 +132,10 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="game.paint.h" />
     <ClInclude Include="init.interface.h" />
+    <ClInclude Include="linked.list.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="params.interface.h" />
+    <ClInclude Include="private.list.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="snake.game.h" />
     <ClInclude Include="targetver.h" />
@@ -143,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.paint.c" />
+    <ClCompile Include="linked.list.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="init.interface.c" />
     <ClCompile Include="snake.game.c" />
