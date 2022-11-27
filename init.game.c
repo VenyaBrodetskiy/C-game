@@ -3,6 +3,9 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "linked.list.h"
+#include "private.list.h"
+
 char** initPlayGround(char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
 {
 	if (PlayGroundInBlocks.bottom <= 1 || PlayGroundInBlocks.right <= 1) return 0;
@@ -67,21 +70,41 @@ void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
 	int center_y = (PlayGroundInBlocks.bottom - PlayGroundInBlocks.top) / 2;
 	
+	//for (int index = 0; index < SNAKE_LENGHT; index++)
+	//{
+	//	if (index < sizeof(snake->body))
+	//	{
+	//		snake->body[index].x = center_x - index;
+	//		snake->body[index].y = center_y;
+	//		PlayGroundMap[snake->body[index].x][snake->body[index].y] = SNAKE;
+	//	}
+	//	
+	//}
+	//// find head and tail
+	//snake->indexOfTail = SNAKE_LENGHT - 1;
+
+	//snake->head = snake->body[0];
+	//snake->tail = snake->body[snake->indexOfTail];
+
+	// body with list
+	snake->body_list = list_create();
+	Point* body_node;
 	for (int index = 0; index < SNAKE_LENGHT; index++)
 	{
-		if (index < sizeof(snake->body))
-		{
-			snake->body[index].x = center_x - index;
-			snake->body[index].y = center_y;
-			PlayGroundMap[snake->body[index].x][snake->body[index].y] = SNAKE;
-		}
-		
+		body_node = malloc(sizeof(Point));
+		// VENYA DON'T FORGET TO FREE MEMORY
+		body_node->x = center_x - index;
+		body_node->y = center_y;
+		list_add_tail(snake->body_list, body_node);
+
+		PlayGroundMap[body_node->x][body_node->y] = SNAKE;
 	}
-	// find head and tail
+	
+	list_ptr_t body_list = (list_ptr_t)(snake->body_list);
+	snake->head = *(Point*)body_list->head_ptr->data_ptr;
+	snake->tail = *(Point*)body_list->head_ptr->prev_ptr->data_ptr;
 	snake->indexOfTail = SNAKE_LENGHT - 1;
 
-	snake->head = snake->body[0];
-	snake->tail = snake->body[snake->indexOfTail];
 }
 
 RECT_ GetPlayGroundInBlocks(int widthBlock, int heightBlock)

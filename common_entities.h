@@ -1,5 +1,6 @@
 #pragma once
 #include "params.game.h"
+#include "linked.list.h"
 
 #ifndef GAME_FOR_WIN_API
 #define GAME_FOR_WIN_API
@@ -42,6 +43,7 @@ typedef struct Snake
 {
     enum Direct direct;
     Point body[SNAKE_MAX_LENGTH];
+    list_t body_list;
     Point head;
     Point tail;
     int indexOfTail;
