@@ -6,6 +6,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "linked.list.h"
+#include "private.list.h"
 // instead of including make dependency injection
 // function updateScore, stopTimer, popUpWindow send as pointers to functions
 
@@ -85,26 +88,50 @@ void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
     case FOOD:
     {
         Beep(2000, 10);
-        snake->indexOfTail++;
 
         snake->score = snake->score + SCORE_INCREMENT + snake->foodBonus;
         updateScore(snake->score);
 
-        stopTimer(FOOD_TIMER);
-        generateFood(snake, PlayGroundMap, PlayGroundInBlocks);
-    }
-    // here no need break, as further actions are same as if there is no food
-    case EMPTY:
-    {
         PlayGroundMap[snake->tail.x][snake->tail.y] = EMPTY; // snake growth on next move after eating food 
         PlayGroundMap[snake->head.x][snake->head.y] = SNAKE;
 
-        for (int index = snake->indexOfTail; index > 0; index--)
-        {
-            snake->body[index] = snake->body[index - 1];
-        }
-        snake->body[0] = snake->head;
-        snake->tail = snake->body[snake->indexOfTail];
+        // for snake as list
+        Point* body_node = malloc(sizeof(Point));
+        body_node->x = snake->head.x;
+        body_node->y = snake->head.y;
+        list_add_head(snake->body_list, body_node);
+        list_ptr_t body_list = (list_ptr_t)(snake->body_list);
+
+        snake->head = *(Point*)body_list->head_ptr->data_ptr;
+        snake->tail = *(Point*)body_list->head_ptr->prev_ptr->data_ptr;
+
+        stopTimer(FOOD_TIMER);
+        generateFood(snake, PlayGroundMap, PlayGroundInBlocks);
+    }
+    break;
+    case EMPTY:
+    {
+
+        //for (int index = snake->indexOfTail; index > 0; index--)
+        //{
+        //    snake->body[index] = snake->body[index - 1];
+        //}
+        //snake->body[0] = snake->head;
+        //snake->tail = snake->body[snake->indexOfTail];
+
+        PlayGroundMap[snake->tail.x][snake->tail.y] = EMPTY; // snake growth on next move after eating food 
+        PlayGroundMap[snake->head.x][snake->head.y] = SNAKE;
+
+        // for snake as list
+        Point* body_node = malloc(sizeof(Point));
+        body_node->x = snake->head.x;
+        body_node->y = snake->head.y;
+        list_add_head(snake->body_list, body_node);
+        list_remove_tail(snake->body_list);
+        list_ptr_t body_list = (list_ptr_t)(snake->body_list);
+
+        snake->head = *(Point*)body_list->head_ptr->data_ptr;
+        snake->tail = *(Point*)body_list->head_ptr->prev_ptr->data_ptr;
     }
         break;
     }
