@@ -33,6 +33,7 @@ typedef struct Point
     int y;
 } Point;
 
+// body of snake here is array
 typedef struct Snake
 {
     enum Direct direct;

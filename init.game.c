@@ -63,7 +63,7 @@ void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 	snake->isGameStarted = TRUE;
 	snake->isGamePaused = FALSE;
 
-	// init snake
+	// init snake as array
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
 	int center_y = (PlayGroundInBlocks.bottom - PlayGroundInBlocks.top) / 2;
 	
