@@ -8,7 +8,6 @@
 #include <stdio.h>
 
 #include "linked.list.h"
-#include "private.list.h"
 // instead of including make dependency injection
 // function updateScore, stopTimer, popUpWindow send as pointers to functions
 
@@ -53,31 +52,41 @@ BOOL changeSnakeDirection(KEYDOWN keyDown, Snake* snake, BOOL isKeyDown)
 
 void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 {
+    // casting snake to readable type
+    list_ptr_t body = (list_ptr_t)(snake->body);
+    
+    Point* head = (Point*)(body->head_ptr->data_ptr);
+    Point* tail = (Point*)(body->head_ptr->prev_ptr->data_ptr);
+
+    Point* new_head = malloc(sizeof(Point));
+    new_head->x = head->x;
+    new_head->y = head->y;
+
     // count next step
     switch (snake->direct)
     {
     case RIGHT:
-        snake->head.x++;
+        new_head->x++;
         break;
     case LEFT:
-        snake->head.x--;
+        new_head->x--;
         break;
     case UP:
-        snake->head.y--;
+        new_head->y--;
         break;
     case DOWN:
-        snake->head.y++;
+        new_head->y++;
         break;
     }
 
     // check if head is within PlayGround
-    if (snake->head.x < 0) snake->head.x = PlayGroundInBlocks.right - 1;
-    if (snake->head.x > PlayGroundInBlocks.right - 1) snake->head.x = 0;
-    if (snake->head.y < 0) snake->head.y = PlayGroundInBlocks.bottom - 1;
-    if (snake->head.y > PlayGroundInBlocks.bottom - 1) snake->head.y = 0;
+    if (new_head->x < 0) new_head->x = PlayGroundInBlocks.right - 1;
+    if (new_head->x > PlayGroundInBlocks.right - 1) new_head->x = 0;
+    if (new_head->y < 0) new_head->y = PlayGroundInBlocks.bottom - 1;
+    if (new_head->y > PlayGroundInBlocks.bottom - 1) new_head->y = 0;
 
     // check if head hit the wall / body / food / nothing
-    switch (PlayGroundMap[snake->head.x][snake->head.y])
+    switch (PlayGroundMap[new_head->x][new_head->y])
     {
     case WALL:
     case SNAKE:
@@ -89,51 +98,33 @@ void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
     {
         Beep(2000, 10);
 
+        // update score
         snake->score = snake->score + SCORE_INCREMENT + snake->foodBonus;
         updateScore(snake->score);
 
-        PlayGroundMap[snake->tail.x][snake->tail.y] = EMPTY; // snake growth on next move after eating food 
-        PlayGroundMap[snake->head.x][snake->head.y] = SNAKE;
-
-        // for snake as list
-        Point* body_node = malloc(sizeof(Point));
-        body_node->x = snake->head.x;
-        body_node->y = snake->head.y;
-        list_add_head(snake->body_list, body_node);
-        list_ptr_t body_list = (list_ptr_t)(snake->body_list);
-
-        snake->head = *(Point*)body_list->head_ptr->data_ptr;
-        snake->tail = *(Point*)body_list->head_ptr->prev_ptr->data_ptr;
-
+        // update food
         stopTimer(FOOD_TIMER);
         generateFood(snake, PlayGroundMap, PlayGroundInBlocks);
+
+        // update map
+        PlayGroundMap[tail->x][tail->y] = EMPTY; // snake growth on next move after eating food 
+        PlayGroundMap[new_head->x][new_head->y] = SNAKE;
+
+        // update snake
+        list_add_head(snake->body, new_head);
     }
     break;
     case EMPTY:
     {
+        // update map
+        PlayGroundMap[tail->x][tail->y] = EMPTY; // snake growth on next move after eating food 
+        PlayGroundMap[new_head->x][new_head->y] = SNAKE;
 
-        //for (int index = snake->indexOfTail; index > 0; index--)
-        //{
-        //    snake->body[index] = snake->body[index - 1];
-        //}
-        //snake->body[0] = snake->head;
-        //snake->tail = snake->body[snake->indexOfTail];
-
-        PlayGroundMap[snake->tail.x][snake->tail.y] = EMPTY; // snake growth on next move after eating food 
-        PlayGroundMap[snake->head.x][snake->head.y] = SNAKE;
-
-        // for snake as list
-        Point* body_node = malloc(sizeof(Point));
-        body_node->x = snake->head.x;
-        body_node->y = snake->head.y;
-        list_add_head(snake->body_list, body_node);
-        list_remove_tail(snake->body_list);
-        list_ptr_t body_list = (list_ptr_t)(snake->body_list);
-
-        snake->head = *(Point*)body_list->head_ptr->data_ptr;
-        snake->tail = *(Point*)body_list->head_ptr->prev_ptr->data_ptr;
+        // update snake
+        list_add_head(snake->body, new_head);
+        list_remove_tail(snake->body);
     }
-        break;
+    break;
     }
 }
 
@@ -177,13 +168,12 @@ int generateFood(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 
 char** startNewGame(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
 {
-    PlayGroundMap = initPlayGround(PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
+    PlayGroundMap = clearPlayGround(PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
     initSnake(snake, PlayGroundMap, PlayGroundInBlocks);
 
     generateFood(snake, PlayGroundMap, PlayGroundInBlocks); // inside this func food_timer is set
 
     createTimer(GAME_TIMER, snake->speed);
-    
 
     setButtonPause();
 

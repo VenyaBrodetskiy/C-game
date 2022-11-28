@@ -27,7 +27,7 @@ HWND hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgress
 // snake
 HDC hdc;
 RECT_ PlayGroundInPixels, PlayGroundInBlocks;
-Snake snake;
+Snake snake = { 0 };
 char **PlayGroundMap;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -39,13 +39,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // Initialize global strings
-    //LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING); // get szTitle
+    // LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING); // get szTitle
     LoadStringW(hInstance, IDC_MYGAME, szWindowClass, MAX_LOADSTRING); // get szWindowClass
     MyRegisterClass(hInstance);
     
     // init Playground for Snake 
     PlayGroundInBlocks = GetPlayGroundInBlocks(FIELD_WIDTH, FIELD_HEIGHT);
     PlayGroundInPixels = GetPlayGroundInPixels(PlayGroundInBlocks, PIXEL_BLOCK);
+    PlayGroundMap = initPlayGroundMap(PlayGroundMap, PlayGroundInBlocks);
 
     snake.isGameStarted = FALSE;
     snake.isGamePaused = FALSE;
@@ -241,7 +242,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
-        free(PlayGroundMap);
+        freePlayGroundMap(PlayGroundMap, PlayGroundInBlocks);
         break;
     default:
         return DefWindowProcW(hWindowMain, message, wParam, lParam);
