@@ -4,13 +4,11 @@
 #include <stdlib.h>
 
 #include "linked.list.h"
-#include "private.list.h"
 
-char** initPlayGround(char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
+char** initPlayGroundMap(char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 {
 	if (PlayGroundInBlocks.bottom <= 1 || PlayGroundInBlocks.right <= 1) return 0;
 
-	free(PlayGroundMap);
 	PlayGroundMap = (char**)malloc((PlayGroundInBlocks.right + 1) * sizeof(char*));
 	if (PlayGroundMap != NULL)
 	{
@@ -20,7 +18,12 @@ char** initPlayGround(char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEna
 			if (PlayGroundMap[i] == NULL) return 0;
 		}
 	}
-	
+
+	return PlayGroundMap;
+}
+
+char** clearPlayGround(char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
+{
 	// clear PlayGround
 	if (PlayGroundMap != NULL && PlayGroundMap[0] != NULL) // check if memory was allocated
 	{
@@ -66,45 +69,29 @@ void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 	snake->isGameStarted = TRUE;
 	snake->isGamePaused = FALSE;
 
+	// free memory from previous snake
+	if (snake->body != NULL)
+	{
+		list_destroy(snake->body, free);
+		// STILL MEMORY DRAINS 
+		// ASK ALON
+	}
 	// init snake
+	snake->body = list_create();
+
 	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
 	int center_y = (PlayGroundInBlocks.bottom - PlayGroundInBlocks.top) / 2;
-	
-	//for (int index = 0; index < SNAKE_LENGHT; index++)
-	//{
-	//	if (index < sizeof(snake->body))
-	//	{
-	//		snake->body[index].x = center_x - index;
-	//		snake->body[index].y = center_y;
-	//		PlayGroundMap[snake->body[index].x][snake->body[index].y] = SNAKE;
-	//	}
-	//	
-	//}
-	//// find head and tail
-	//snake->indexOfTail = SNAKE_LENGHT - 1;
 
-	//snake->head = snake->body[0];
-	//snake->tail = snake->body[snake->indexOfTail];
-
-	// body with list
-	snake->body_list = list_create();
-	Point* body_node;
 	for (int index = 0; index < SNAKE_LENGHT; index++)
 	{
-		body_node = malloc(sizeof(Point));
-		// VENYA DON'T FORGET TO FREE MEMORY
+		Point* body_node = malloc(sizeof(Point));
+
 		body_node->x = center_x - index;
 		body_node->y = center_y;
-		list_add_tail(snake->body_list, body_node);
+		list_add_tail(snake->body, body_node);
 
 		PlayGroundMap[body_node->x][body_node->y] = SNAKE;
 	}
-	
-	list_ptr_t body_list = (list_ptr_t)(snake->body_list);
-	snake->head = *(Point*)body_list->head_ptr->data_ptr;
-	snake->tail = *(Point*)body_list->head_ptr->prev_ptr->data_ptr;
-	snake->indexOfTail = SNAKE_LENGHT - 1;
-
 }
 
 RECT_ GetPlayGroundInBlocks(int widthBlock, int heightBlock)
@@ -127,4 +114,13 @@ RECT_ GetPlayGroundInPixels(RECT_ PlayGroundInBlocks, int pixelBlock)
 	PlayGroundInPixels.bottom = PlayGroundInBlocks.bottom * pixelBlock;
 
 	return PlayGroundInPixels;
+}
+
+void freePlayGroundMap(char** PlayGroundMap, RECT_ PlayGroundInBlocks)
+{
+	for (int i = 0; i <= PlayGroundInBlocks.right; i++)
+	{
+		free(PlayGroundMap[i]);
+	}
+	free(PlayGroundMap);
 }

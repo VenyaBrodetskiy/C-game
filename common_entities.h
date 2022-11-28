@@ -42,11 +42,7 @@ typedef struct Point
 typedef struct Snake
 {
     enum Direct direct;
-    Point body[SNAKE_MAX_LENGTH];
-    list_t body_list;
-    Point head;
-    Point tail;
-    int indexOfTail;
+    list_t body;
     int speed;
     int bonusSpeed;
     int score;
@@ -54,6 +50,19 @@ typedef struct Snake
     BOOL isGameStarted;
     BOOL isGamePaused;
 } Snake;
+
+typedef struct _node_t
+{
+    void* data_ptr;
+    struct _node_t* next_ptr;
+    struct _node_t* prev_ptr;
+} *node_ptr_t;
+
+typedef struct _list_t
+{
+    node_ptr_t head_ptr;
+    int size;
+} *list_ptr_t;
 
 enum Direct {
     RIGHT,

@@ -67,6 +67,10 @@ int drawPlayGround(HDC hdc, Snake* snake, char**PlayGroundMap, RECT_ PlayGroundI
     // from here we paint in buffer
     drawGameField(bufferDC, PlayGroundInPixels);
 
+    // cast data from snake
+    list_ptr_t body = (list_ptr_t)(snake->body);
+    Point* head = (Point*)(body->head_ptr->data_ptr);
+
     for (int x = 0; x <= PlayGroundInBlocks.right; x++) 
     {
         for (int y = 0; y <= PlayGroundInBlocks.bottom; y++)
@@ -74,7 +78,7 @@ int drawPlayGround(HDC hdc, Snake* snake, char**PlayGroundMap, RECT_ PlayGroundI
             switch (PlayGroundMap[x][y])
             {
             case SNAKE:
-                if (snake->head.x == x && snake->head.y == y) drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, COLOR_SNAKE);
+                if (head->x == x && head->y == y) drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, COLOR_SNAKE);
                 else drawSquareBlock(bufferDC, x, y, COLOR_SNAKE, RGB(0, 0, 100));
                 break;
             case WALL:
@@ -89,7 +93,6 @@ int drawPlayGround(HDC hdc, Snake* snake, char**PlayGroundMap, RECT_ PlayGroundI
                 break;
             }
             }
-            
         }
     }
 
