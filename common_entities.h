@@ -76,4 +76,4 @@ typedef enum Timers {
     FOOD_TIMER
 } Timers;
 
-typedef void* KEYDOWN;
+typedef unsigned long long* KEYDOWN;

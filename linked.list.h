@@ -19,6 +19,9 @@ void		list_destroy (list_t list, action_t* free_function);
 BOOL		list_add_head(list_t list, void* data_ptr);
 BOOL		list_add_tail(list_t list, void* data_ptr);
 
+void*		list_get_head_data(list_t list);
+void*		list_get_tail_data(list_t list);
+
 void		list_remove_head(list_t list);
 void		list_remove_tail(list_t list);
 

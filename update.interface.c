@@ -53,11 +53,6 @@ void popUpGameOver(wchar_t message[])
     HWND messageBox = MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
 }
 
-localKEYDOWN toLocalKeyDown(KEYDOWN keyDown)
-{
-    return (localKEYDOWN*)keyDown;
-}
-
 // currently this function is not used, because screen size is fixed
 int MoveAllButtons(HWND hWindowMain, RECT_ GameField)
 {
