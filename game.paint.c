@@ -67,9 +67,7 @@ int drawPlayGround(HDC hdc, Snake* snake, char**PlayGroundMap, RECT_ PlayGroundI
     // from here we paint in buffer
     drawGameField(bufferDC, PlayGroundInPixels);
 
-    // cast data from snake
-    list_ptr_t body = (list_ptr_t)(snake->body);
-    Point* head = (Point*)(body->head_ptr->data_ptr);
+    Point* head = (Point*)list_get_head_data(snake->body);
 
     for (int x = 0; x <= PlayGroundInBlocks.right; x++) 
     {

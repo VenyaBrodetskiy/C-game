@@ -115,6 +115,28 @@ BOOL list_add_tail(list_t list, void* data_ptr)
     return LIST_SUCCESS;
 }
 
+void* list_get_head_data(list_t list)
+{
+    list_ptr_t list_info = to_list(list);
+
+    if (list_info->size == 0)
+    {
+        return (void*)NULL;
+    }
+    return list_info->head_ptr->data_ptr;
+}
+
+void* list_get_tail_data(list_t list)
+{
+    list_ptr_t list_info = to_list(list);
+
+    if (list_info->size == 0)
+    {
+        return (void*)NULL;
+    }
+    return list_info->head_ptr->prev_ptr->data_ptr;
+}
+
 void list_remove_head(list_t list)
 {
     list_ptr_t list_info = to_list(list);

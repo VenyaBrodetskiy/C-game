@@ -13,9 +13,7 @@
 
 BOOL changeSnakeDirection(KEYDOWN keyDown, Snake* snake, BOOL isKeyDown)
 {   
-    localKEYDOWN localKeyDown = toLocalKeyDown(keyDown);
-
-    switch (*localKeyDown)
+    switch (*keyDown)
     {
     case VK_UP:
         if (snake->direct != DOWN && !isKeyDown) 
@@ -52,11 +50,8 @@ BOOL changeSnakeDirection(KEYDOWN keyDown, Snake* snake, BOOL isKeyDown)
 
 void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 {
-    // casting snake to readable type
-    list_ptr_t body = (list_ptr_t)(snake->body);
-    
-    Point* head = (Point*)(body->head_ptr->data_ptr);
-    Point* tail = (Point*)(body->head_ptr->prev_ptr->data_ptr);
+    Point* head = (Point*)list_get_head_data(snake->body);
+    Point* tail = (Point*)list_get_tail_data(snake->body);
 
     Point* new_head = malloc(sizeof(Point));
     new_head->x = head->x;
