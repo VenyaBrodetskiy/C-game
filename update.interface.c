@@ -10,6 +10,30 @@
 
 extern HWND hWindowMain, hButtonStart, hStaticText, hDynamicText, hTrackBar, hButtonPause;
 
+ControlUI* initializeControlUI()
+{
+    ControlUI* controlUI = malloc(sizeof(ControlUI));
+
+    if (controlUI == NULL) {
+        return NULL;
+    }
+
+    controlUI->updateScore_f = updateScore;
+    controlUI->getSnakeSpeed_f = getSnakeSpeed;
+    controlUI->setButtonContinue_f = setButtonContinue;
+    controlUI->setButtonPause_f = setButtonPause;
+    controlUI->createTimer_f = createTimer;
+    controlUI->stopTimer_f = stopTimer;
+    controlUI->popUpGameOver_f = popUpGameOver;
+
+    return controlUI;
+}
+
+BOOL destructControlUI(ControlUI* controlUI)
+{
+    free(controlUI);
+}
+
 int updateScore(int score)
 {
     wchar_t scoreString[15];

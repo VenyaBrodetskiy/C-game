@@ -5,6 +5,8 @@
 #define AVERAGE_RESULT 200
 #define HIGH_RESULT 500
 
+void	initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks, ControlUI* controlUI);
+void	clearSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInPixels);
 void	moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks);
 BOOL	changeSnakeDirection(KEYDOWN keyDown, Snake* snake, BOOL isKeyDown);
 void	gameOver(Snake* snake);

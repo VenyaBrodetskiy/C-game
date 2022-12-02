@@ -2,6 +2,8 @@
 #include "params.game.h"
 #include "linked.list.h"
 
+#include <tchar.h>
+
 #ifndef GAME_FOR_WIN_API
 #define GAME_FOR_WIN_API
 #endif // !GAME_FOR_WIN_API
@@ -39,8 +41,28 @@ typedef struct Point
     int y;
 } Point;
 
+typedef int updateScore_t(int score);
+typedef int getSnakeSpeed_t();
+typedef void setButtonContinue_t();
+typedef void setButtonPause_t();
+typedef void createTimer_t(int timer, int speed);
+typedef void stopTimer_t(int timer);
+typedef void popUpGameOver_t(wchar_t message[]);
+
+typedef struct _ControlUI
+{
+    updateScore_t* updateScore_f;
+    getSnakeSpeed_t* getSnakeSpeed_f;
+    setButtonContinue_t* setButtonContinue_f;
+    setButtonPause_t* setButtonPause_f;
+    createTimer_t* createTimer_f;
+    stopTimer_t* stopTimer_f;
+    popUpGameOver_t* popUpGameOver_f;
+} ControlUI;
+
 typedef struct Snake
 {
+    // properties
     enum Direct direct;
     list_t body;
     int speed;
@@ -49,6 +71,8 @@ typedef struct Snake
     int foodBonus;
     BOOL isGameStarted;
     BOOL isGamePaused;
+    // functions
+    ControlUI* controlUI;
 } Snake;
 
 typedef struct _node_t

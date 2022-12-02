@@ -53,47 +53,6 @@ char** clearPlayGround(char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEn
 	return PlayGroundMap;
 }
 
-void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
-{
-	// clear points
-	snake->score = 0;
-	updateScore(snake->score);
-	snake->foodBonus = MAX_BONUS;
-
-	// set direction and speed
-	snake->direct = RIGHT;
-	snake->speed = getSnakeSpeed();
-	snake->bonusSpeed = (int)round(snake->speed / BONUS_COEFF) + SPEED_MAX;
-
-	// clear game status variables
-	snake->isGameStarted = TRUE;
-	snake->isGamePaused = FALSE;
-
-	// free memory from previous snake
-	if (snake->body != NULL)
-	{
-		list_destroy(snake->body, free);
-		// STILL MEMORY DRAINS 
-		// ASK ALON
-	}
-	// init snake
-	snake->body = list_create();
-
-	int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
-	int center_y = (PlayGroundInBlocks.bottom - PlayGroundInBlocks.top) / 2;
-
-	for (int index = 0; index < SNAKE_LENGHT; index++)
-	{
-		Point* body_node = malloc(sizeof(Point));
-
-		body_node->x = center_x - index;
-		body_node->y = center_y;
-		list_add_tail(snake->body, body_node);
-
-		PlayGroundMap[body_node->x][body_node->y] = SNAKE;
-	}
-}
-
 RECT_ GetPlayGroundInBlocks(int widthBlock, int heightBlock)
 {
 	RECT_ PlayGroundInBlocks = { 0 };
