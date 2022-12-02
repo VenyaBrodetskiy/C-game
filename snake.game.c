@@ -48,6 +48,56 @@ BOOL changeSnakeDirection(KEYDOWN keyDown, Snake* snake, BOOL isKeyDown)
     return isKeyDown;
 }
 
+void initSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks, ControlUI* controlUI)
+{
+    snake->isGameStarted = FALSE;
+    snake->isGamePaused = FALSE;
+
+    // assign injected functionality
+    snake->controlUI = controlUI;
+}
+
+void clearSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
+{
+    // clear points
+    snake->score = 0;
+    snake->controlUI->updateScore_f(snake->score);
+    snake->foodBonus = MAX_BONUS;
+
+    // set direction and speed
+    snake->direct = RIGHT;
+    snake->speed = getSnakeSpeed();
+    snake->bonusSpeed = (int)round(snake->speed / BONUS_COEFF) + SPEED_MAX;
+
+    // clear game status variables
+    snake->isGameStarted = TRUE;
+    snake->isGamePaused = FALSE;
+
+    // free memory from previous snake
+    if (snake->body != NULL)
+    {
+        list_destroy(snake->body, free);
+        // STILL MEMORY DRAINS 
+        // ASK ALON
+    }
+    // init snake
+    snake->body = list_create();
+
+    int center_x = (PlayGroundInBlocks.right - PlayGroundInBlocks.left) / 2;
+    int center_y = (PlayGroundInBlocks.bottom - PlayGroundInBlocks.top) / 2;
+
+    for (int index = 0; index < SNAKE_LENGHT; index++)
+    {
+        Point* body_node = malloc(sizeof(Point));
+
+        body_node->x = center_x - index;
+        body_node->y = center_y;
+        list_add_tail(snake->body, body_node);
+
+        PlayGroundMap[body_node->x][body_node->y] = SNAKE;
+    }
+}
+
 void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 {
     Point* head = (Point*)list_get_head_data(snake->body);
@@ -95,10 +145,10 @@ void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 
         // update score
         snake->score = snake->score + SCORE_INCREMENT + snake->foodBonus;
-        updateScore(snake->score);
+        snake->controlUI->updateScore_f(snake->score);
 
         // update food
-        stopTimer(FOOD_TIMER);
+        snake->controlUI->stopTimer_f(FOOD_TIMER);
         generateFood(snake, PlayGroundMap, PlayGroundInBlocks);
 
         // update map
@@ -125,8 +175,9 @@ void moveSnake(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 
 void gameOver(Snake* snake)
 {
-    stopTimer(GAME_TIMER);
-    stopTimer(FOOD_TIMER);
+    snake->controlUI->stopTimer_f(GAME_TIMER);
+    snake->controlUI->stopTimer_f(FOOD_TIMER);
+
     snake->isGameStarted = FALSE;
 
     wchar_t message[120];
@@ -139,8 +190,7 @@ void gameOver(Snake* snake)
     else 
         swprintf_s(message, 120, L"Your score: %d \nThis is crazy! \n\nPress Enter to try again", snake->score);
     
-    popUpGameOver(message);
-
+    snake->controlUI->popUpGameOver_f(message);
 }
 
 int generateFood(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
@@ -156,7 +206,8 @@ int generateFood(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
     PlayGroundMap[food.x][food.y] = FOOD;
     
     snake->foodBonus = MAX_BONUS;
-    createTimer(FOOD_TIMER, snake->bonusSpeed);
+    
+    snake->controlUI->createTimer_f(FOOD_TIMER, snake->bonusSpeed);
 
     return 1;
 }
@@ -164,33 +215,33 @@ int generateFood(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks)
 char** startNewGame(Snake* snake, char** PlayGroundMap, RECT_ PlayGroundInBlocks, BOOL isEnabledWalls)
 {
     PlayGroundMap = clearPlayGround(PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
-    initSnake(snake, PlayGroundMap, PlayGroundInBlocks);
+    clearSnake(snake, PlayGroundMap, PlayGroundInBlocks);
 
     generateFood(snake, PlayGroundMap, PlayGroundInBlocks); // inside this func food_timer is set
 
-    createTimer(GAME_TIMER, snake->speed);
+    snake->controlUI->createTimer_f(GAME_TIMER, snake->speed);
 
-    setButtonPause();
+    snake->controlUI->setButtonPause_f();
 
     return PlayGroundMap;
 }
 
 void pauseGame(Snake* snake)
 {
-    stopTimer(GAME_TIMER);
-    stopTimer(FOOD_TIMER);
+    snake->controlUI->stopTimer_f(GAME_TIMER);
+    snake->controlUI->stopTimer_f(FOOD_TIMER);
 
-    setButtonContinue();
+    snake->controlUI->setButtonContinue_f();
 
     snake->isGamePaused = TRUE;
 }
 
 void resumeGame(Snake* snake)
 {
-    createTimer(GAME_TIMER, snake->speed);
-    createTimer(FOOD_TIMER, snake->bonusSpeed);
+    snake->controlUI->createTimer_f(GAME_TIMER, snake->speed);
+    snake->controlUI->createTimer_f(FOOD_TIMER, snake->bonusSpeed);
 
-    setButtonPause();
+    snake->controlUI->setButtonPause_f();
 
     snake->isGamePaused = FALSE;
 }

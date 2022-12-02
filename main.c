@@ -28,6 +28,7 @@ HWND hButtonStart, hButtonPause, hStaticText, hDynamicText, hTrackBar, hProgress
 HDC hdc;
 RECT_ PlayGroundInPixels, PlayGroundInBlocks;
 Snake snake = { 0 };
+ControlUI* controlUI;
 char **PlayGroundMap;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -48,8 +49,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     PlayGroundInPixels = GetPlayGroundInPixels(PlayGroundInBlocks, PIXEL_BLOCK);
     PlayGroundMap = initPlayGroundMap(PlayGroundMap, PlayGroundInBlocks);
 
-    snake.isGameStarted = FALSE;
-    snake.isGamePaused = FALSE;
+    // init user interface functions
+    controlUI = initializeControlUI();
+
+    // init snake + inject UI functions into snake
+    initSnake(&snake, PlayGroundMap, PlayGroundInBlocks, controlUI);
 
     // Perform application initialization:
     if (!InitMainWindow(hInstance, nCmdShow, PlayGroundInPixels))
@@ -133,7 +137,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         switch (wmId)
         {
         case BUTTON_START:
-            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
+            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls, controlUI);
             break;
         case BUTTON_PAUSE:
             if (snake.isGameStarted && snake.isGamePaused)
@@ -165,7 +169,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             if (snake.isGameStarted)
             {
                 isKeyDown = FALSE;
-                moveSnake(&snake, PlayGroundMap, PlayGroundInBlocks);
+                moveSnake(&snake, PlayGroundMap, PlayGroundInBlocks, controlUI);
                 drawPlayGround(hdc, &snake, PlayGroundMap, PlayGroundInPixels, PlayGroundInBlocks);
             }
             break;
@@ -186,7 +190,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     }
     case WM_KEYUP:
         if (wParam == VK_RETURN && (!snake.isGameStarted || snake.isGamePaused))
-            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
+            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls, controlUI);
         
         if (wParam == VK_SPACE && snake.isGameStarted && snake.isGamePaused)
         {
@@ -243,6 +247,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     case WM_DESTROY:
         PostQuitMessage(0);
         freePlayGroundMap(PlayGroundMap, PlayGroundInBlocks);
+        destructControlUI(controlUI);
         break;
     default:
         return DefWindowProcW(hWindowMain, message, wParam, lParam);
