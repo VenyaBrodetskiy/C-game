@@ -48,7 +48,10 @@ typedef void setButtonPause_t();
 typedef void createTimer_t(int timer, int speed);
 typedef void stopTimer_t(int timer);
 typedef void popUpGameOver_t(wchar_t message[]);
+typedef void beep_t();
 
+// maybe it is more logical to define this struct in control.ui.h?
+// ASK ALON
 typedef struct _ControlUI
 {
     updateScore_t* updateScore_f;
@@ -58,6 +61,7 @@ typedef struct _ControlUI
     createTimer_t* createTimer_f;
     stopTimer_t* stopTimer_f;
     popUpGameOver_t* popUpGameOver_f;
+    beep_t* beep_f;
 } ControlUI;
 
 typedef struct Snake

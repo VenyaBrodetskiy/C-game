@@ -8,7 +8,6 @@
 	#define VK_DOWN		0x28
 #endif
 
-ControlUI* initializeControlUI();
-
-BOOL destructControlUI(ControlUI* controlUI);
+ControlUI*  initializeControlUI();
+void		destructControlUI(ControlUI* controlUI);
 

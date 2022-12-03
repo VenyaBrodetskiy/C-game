@@ -137,7 +137,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
         switch (wmId)
         {
         case BUTTON_START:
-            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls, controlUI);
+            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
             break;
         case BUTTON_PAUSE:
             if (snake.isGameStarted && snake.isGamePaused)
@@ -169,7 +169,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
             if (snake.isGameStarted)
             {
                 isKeyDown = FALSE;
-                moveSnake(&snake, PlayGroundMap, PlayGroundInBlocks, controlUI);
+                moveSnake(&snake, PlayGroundMap, PlayGroundInBlocks);
                 drawPlayGround(hdc, &snake, PlayGroundMap, PlayGroundInPixels, PlayGroundInBlocks);
             }
             break;
@@ -190,7 +190,7 @@ LRESULT CALLBACK MainWindowProcedure(HWND hWindowMain, UINT message, WPARAM wPar
     }
     case WM_KEYUP:
         if (wParam == VK_RETURN && (!snake.isGameStarted || snake.isGamePaused))
-            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls, controlUI);
+            PlayGroundMap = startNewGame(&snake, PlayGroundMap, PlayGroundInBlocks, isEnabledWalls);
         
         if (wParam == VK_SPACE && snake.isGameStarted && snake.isGamePaused)
         {
