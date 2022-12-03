@@ -39,6 +39,7 @@ typedef struct Point
     int y;
 } Point;
 
+// snake with linked list
 typedef struct Snake
 {
     enum Direct direct;
