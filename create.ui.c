@@ -1,9 +1,9 @@
 #include "params.game.h"
-#include "params.interface.h"
+#include "params.ui.h"
 
 #include "common_entities.h"
 
-#include "init.interface.h"
+#include "create.ui.h"
 
 #include <commctrl.h>
 
