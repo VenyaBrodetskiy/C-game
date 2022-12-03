@@ -1,5 +1,5 @@
 #include "common_entities.h"
-#include "init.game.h"
+#include "playground.game.h"
 #include <math.h>
 #include <stdlib.h>
 

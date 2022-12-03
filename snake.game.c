@@ -1,8 +1,8 @@
 ﻿#include "common_entities.h"
 
-#include "init.game.h"
+#include "playground.game.h"
 #include "snake.game.h"
-#include "update.interface.h"
+#include "control.ui.h"
 
 #include <stdlib.h>
 #include <stdio.h>

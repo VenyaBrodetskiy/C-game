@@ -1,10 +1,11 @@
-#include "params.interface.h"
+#include "params.ui.h"
 #include "common_entities.h"
 
 #include <tchar.h>
 #include "windows.h" 
 
-#include "update.interface.h"
+#include "control.ui.h"
+#include "private.control.ui.h"
 
 #include <commctrl.h>
 

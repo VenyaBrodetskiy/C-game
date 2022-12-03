@@ -2,7 +2,7 @@
 
 #include "params.game.h"
 #include "common_entities.h"
-#include "game.paint.h"
+#include "game.draw.h"
 
 int drawGameTips(HDC hdc, RECT_ PlayGroundInPixels)
 {

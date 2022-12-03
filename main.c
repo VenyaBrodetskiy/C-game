@@ -1,14 +1,14 @@
 #include "params.game.h"
-#include "params.interface.h"
+#include "params.ui.h"
 
 #include "common_entities.h"
 
-#include "init.interface.h"
-#include "update.interface.h"
+#include "create.ui.h"
+#include "control.ui.h"
 
-#include "init.game.h"
+#include "playground.game.h"
 #include "snake.game.h"
-#include "game.paint.h"
+#include "game.draw.h"
 
 #include "main.h"
 #include <commctrl.h>

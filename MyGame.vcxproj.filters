@@ -13,18 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\interface">
-      <UniqueIdentifier>{e399c842-42e9-4a94-8978-00f035a6d929}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\interface">
-      <UniqueIdentifier>{0974daa2-4588-4005-9c5e-015a7a4be3a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\paint">
-      <UniqueIdentifier>{0eb351e3-6e34-4932-9061-8f56f2808177}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\paint">
-      <UniqueIdentifier>{972f1c1b-883d-44f3-9fea-4ae7acdeb651}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\gamelogic">
       <UniqueIdentifier>{c45d75d7-2f32-40b8-9485-49dccae72d7c}</UniqueIdentifier>
     </Filter>
@@ -36,6 +24,18 @@
     </Filter>
     <Filter Include="Header Files\linked list">
       <UniqueIdentifier>{1f05dc95-629e-4fad-8e89-2d8a8c15df8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\user.interface">
+      <UniqueIdentifier>{e399c842-42e9-4a94-8978-00f035a6d929}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\user.interface">
+      <UniqueIdentifier>{0974daa2-4588-4005-9c5e-015a7a4be3a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\draw">
+      <UniqueIdentifier>{972f1c1b-883d-44f3-9fea-4ae7acdeb651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\draw">
+      <UniqueIdentifier>{0eb351e3-6e34-4932-9061-8f56f2808177}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,26 +51,26 @@
     <ClInclude Include="main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="init.interface.h">
-      <Filter>Header Files\interface</Filter>
+    <ClInclude Include="create.ui.h">
+      <Filter>Header Files\user.interface</Filter>
     </ClInclude>
-    <ClInclude Include="update.interface.h">
-      <Filter>Header Files\interface</Filter>
+    <ClInclude Include="control.ui.h">
+      <Filter>Header Files\user.interface</Filter>
     </ClInclude>
-    <ClInclude Include="game.paint.h">
-      <Filter>Header Files\paint</Filter>
+    <ClInclude Include="game.draw.h">
+      <Filter>Header Files\draw</Filter>
     </ClInclude>
     <ClInclude Include="snake.game.h">
       <Filter>Header Files\gamelogic</Filter>
     </ClInclude>
-    <ClInclude Include="init.game.h">
+    <ClInclude Include="playground.game.h">
       <Filter>Header Files\gamelogic</Filter>
     </ClInclude>
     <ClInclude Include="params.game.h">
       <Filter>Header Files\gamelogic</Filter>
     </ClInclude>
-    <ClInclude Include="params.interface.h">
-      <Filter>Header Files\interface</Filter>
+    <ClInclude Include="params.ui.h">
+      <Filter>Header Files\user.interface</Filter>
     </ClInclude>
     <ClInclude Include="common_entities.h">
       <Filter>Header Files</Filter>
@@ -81,24 +81,27 @@
     <ClInclude Include="private.list.h">
       <Filter>Header Files\linked list</Filter>
     </ClInclude>
+    <ClInclude Include="private.control.ui.h">
+      <Filter>Header Files\user.interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="init.interface.c">
-      <Filter>Source Files\interface</Filter>
+    <ClCompile Include="create.ui.c">
+      <Filter>Source Files\user.interface</Filter>
     </ClCompile>
-    <ClCompile Include="update.interface.c">
-      <Filter>Source Files\interface</Filter>
+    <ClCompile Include="control.ui.c">
+      <Filter>Source Files\user.interface</Filter>
     </ClCompile>
-    <ClCompile Include="game.paint.c">
-      <Filter>Source Files\paint</Filter>
+    <ClCompile Include="game.draw.c">
+      <Filter>Source Files\draw</Filter>
     </ClCompile>
     <ClCompile Include="snake.game.c">
       <Filter>Source Files\gamelogic</Filter>
     </ClCompile>
-    <ClCompile Include="init.game.c">
+    <ClCompile Include="playground.game.c">
       <Filter>Source Files\gamelogic</Filter>
     </ClCompile>
     <ClCompile Include="linked.list.c">

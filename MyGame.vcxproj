@@ -130,27 +130,28 @@
   <ItemGroup>
     <ClInclude Include="common_entities.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="game.paint.h" />
-    <ClInclude Include="init.interface.h" />
+    <ClInclude Include="game.draw.h" />
+    <ClInclude Include="create.ui.h" />
     <ClInclude Include="linked.list.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="params.interface.h" />
+    <ClInclude Include="params.ui.h" />
+    <ClInclude Include="private.control.ui.h" />
     <ClInclude Include="private.list.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="snake.game.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="params.game.h" />
-    <ClInclude Include="update.interface.h" />
-    <ClInclude Include="init.game.h" />
+    <ClInclude Include="control.ui.h" />
+    <ClInclude Include="playground.game.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game.paint.c" />
+    <ClCompile Include="game.draw.c" />
     <ClCompile Include="linked.list.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="init.interface.c" />
+    <ClCompile Include="create.ui.c" />
     <ClCompile Include="snake.game.c" />
-    <ClCompile Include="update.interface.c" />
-    <ClCompile Include="init.game.c" />
+    <ClCompile Include="control.ui.c" />
+    <ClCompile Include="playground.game.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyGame.rc" />
