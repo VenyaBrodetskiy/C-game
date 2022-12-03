@@ -26,11 +26,11 @@ ControlUI* initializeControlUI()
     controlUI->createTimer_f = createTimer;
     controlUI->stopTimer_f = stopTimer;
     controlUI->popUpGameOver_f = popUpGameOver;
-
+    controlUI->beep_f = beep;
     return controlUI;
 }
 
-BOOL destructControlUI(ControlUI* controlUI)
+void destructControlUI(ControlUI* controlUI)
 {
     free(controlUI);
 }
@@ -75,9 +75,13 @@ void stopTimer(int timer)
 
 void popUpGameOver(wchar_t message[])
 {
-    HWND messageBox = MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
+    MessageBoxW(hWindowMain, message, L"Game Over", MB_OK);
 }
 
+void beep()
+{
+    Beep(2000, 10);
+}
 // currently this function is not used, because screen size is fixed
 int MoveAllButtons(HWND hWindowMain, RECT_ GameField)
 {

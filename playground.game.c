@@ -1,8 +1,8 @@
 #include "common_entities.h"
 #include "playground.game.h"
+
 #include <math.h>
 #include <stdlib.h>
-
 #include "linked.list.h"
 
 char** initPlayGroundMap(char** PlayGroundMap, RECT_ PlayGroundInBlocks)

@@ -6,12 +6,12 @@
 
 int drawGameTips(HDC hdc, RECT_ PlayGroundInPixels)
 {
-    HWND hFont1 = CreateFontW(20, 0, 0, 0, FW_SEMIBOLD, 0, 0, 0, 0, 0, 0, 0, 0, L"Consolas");
+    HFONT hFont1 = CreateFontW(20, 0, 0, 0, FW_SEMIBOLD, 0, 0, 0, 0, 0, 0, 0, 0, L"Consolas");
     HWND hOldFont = SelectObject(hdc, hFont1);
     SetTextColor(hdc, COLOR_SNAKE);
     SetBkColor(hdc, COLOR_BLACK);
 
-    RECT_ textRect =
+    RECT textRect =
     {
         (PlayGroundInPixels.right - BIG_TIPS_WIDTH) / 2,
         (PlayGroundInPixels.bottom - BIG_TIPS_HEIGHT) / 2,
